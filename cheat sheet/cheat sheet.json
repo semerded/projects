@@ -1,0 +1,27 @@
+{
+    "javascript": [
+        {
+            "function": "function random(min, max) {\n            return Math.floor(Math.random() * (max - min + 1)) + min;        \n}",
+            "name": "random integer",
+            "description": "gives a random integer with min and max included"
+        },
+        {
+            "function": "document.addEventListener('visibilitychange', () => {\n            if (document.hidden) {\n                document.title = 'titel'\n            } else {\n                document.title = 'titel'\n            }\n      });",
+            "name": "change title when page is focused/unfocused",
+            "description": "when the page goes from focused to unfocused the title will change to the set name"
+        }
+    ],
+    "arduino": [],
+    "python": [
+        {
+            "function": "__counter__ = sum(map(lambda x: 1 if '__char__' in x else 0, __str__))",
+            "name": "count item in string",
+            "description": "counts an item in a string and saves it to a var"
+        },
+        {
+            "name": "vierkant detectie",
+            "description": "geeft true terug als de muis zich in het vierkant bevindt",
+            "function": "def vierkantdetectie(xpositie: int, ypositie: int, lengte: int, hoogte: int, kleurvierkant: tuple[int, int, int] = (0, 0, 0), rand: int = 0, afvlakking: int = -1):\n\n    global mouse_pos\n    rect = pygame.draw.rect(display, kleurvierkant, pygame.Rect(\n        xpositie, ypositie, lengte, hoogte), rand, afvlakking)\n    mouse_pos = pygame.mouse.get_pos()\n    if rect.collidepoint(mouse_pos):\n        return True\n    return False"
+        }
+    ]
+}
