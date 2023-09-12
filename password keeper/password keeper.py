@@ -131,11 +131,22 @@ def getKeyByNumber(keyNumber):
     return False
 
 
-def decript(keyNumber):
-    encriptedPassword = getKeyByNumber(keyNumber)
-    if not encriptedPassword:
+def encript(keyNumber):
+    key = getKeyByNumber(keyNumber)
+    decriptedPassword = data[key]
+    if not decriptedPassword:
         return False
+    bytes = []
+    for index, char in enumerate(decriptedPassword):
+        bytes.extend(ord(num) for num in char)
+        ascii = bytes[index] * 2
+        bytes[index] = bin(ascii)[2:]
+    byteString = ""
+    for byte in bytes:
+        byteString += byte
+    print(byteString)
     
+
     # shift letters by random number
     # convert to ascii
     # convert to binary
@@ -193,7 +204,7 @@ hidetime = setup["hidetime"]
 
 with open('password keeper.json') as dataFile:
     data = json.load(dataFile)
-
+print(encript(0))
 
 while True:
     print("1. see passwords\n2. add password\n3. delete password\n4. account list\n5. setup\n6. quit")
