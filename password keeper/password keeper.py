@@ -129,10 +129,17 @@ def getKeyByNumber(keyNumber):
         if index == keyNumber:
             return key
     return False
+
+
 def decript(keyNumber):
     encriptedPassword = getKeyByNumber(keyNumber)
     if not encriptedPassword:
         return False
+    
+    # shift letters by random number
+    # convert to ascii
+    # convert to binary
+    # add together to get int
          
     
 def setupKeeper():
