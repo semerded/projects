@@ -15,6 +15,16 @@ zal False terug geven als de waarde wel een integer is
     else:
         return False
 
+def getIntNumber(min: int, max: int, inputText: str, errorText: str):
+    prompt = input(inputText)
+    try:
+        int(prompt)
+    except ValueError:
+        print(errorText)
+        return True
+    else:
+        if int(prompt) >= min and int(prompt) <= max:
+            return int(prompt)
 
     
 def passwordGenerator(lengte: int = 12, kleine_letters: bool = True, hoofdletter: bool = True, cijfers: bool = True, speciale_tekens: bool = True):
@@ -73,6 +83,15 @@ if os.path.isfile('password keeper.json') is False or os.path.isfile('password k
 with open('password keeper setup.json') as setupFile: # open file
     setup = json.load(setupFile) # take data out of file and save it with json layout
 
+def askSafetyQuestions():
+    print(setup["safetyquestion"][0])
+    answer = input("answer: ")
+    if answer == setup["safetyquestion"][1]:
+        return True
+    return False
+    
+    
+    
     
 def askPassword():
     print("\npassword keeper_")
@@ -89,10 +108,33 @@ def askPassword():
         if correct == True:
             print("<password correct>\nopening app...")
             sleep(0.5)
+            return
         else:
-            print("no more password guesses left\n\ntry again later...")
-            exit()
+            print("no more password guesses left")
+            if input("do you want to reset your password? (Y/N) ").lower() == "y":
+                if setup["safetyquestion"] != None:
+                    if askSafetyQuestions():
+                        print("safety question correct")
+                        print("starting paswordMaker")
+                        setup["password"] = passwordMaker()
+                    else:
+                        print("\nsafety question incorrect")
+        print("\n\ntry again later")
+        exit()
+                
+            
 
+def getKeyByNumber(keyNumber):
+    for index, key in enumerate(data):
+        if index == keyNumber:
+            return key
+    return False
+def decript(keyNumber):
+    encriptedPassword = getKeyByNumber(keyNumber)
+    if not encriptedPassword:
+        return False
+         
+    
 def setupKeeper():
     setup["setup"] = False
     print("welcome to the password keeper setup")
@@ -114,23 +156,16 @@ def setupKeeper():
         setup["password"] = None
     else:
         setup["password"] = passwordMaker()
-
-    # beveiligingsvragen
+        
+    # beveiligingsvraag
     if setup["password"] != None:
         prompt = input("do you want safety questions in case you forget your password? (Y/N): ")
         if prompt.lower() == "y":
-            safetyquestionDict = {}
-            while True:
-                print("\nyou can have as many safety questions as you want\nto stop making safety questions type 'stop'")
-                vraag = input("QUESTION: ")
-                if vraag.lower() == "stop":
-                    break
-                antwoord = input("ANSWER: ")
-                if antwoord.lower() == "stop":
-                    break
-                safetyquestionDict[vraag] = antwoord
-                
-            setup["safetyquestion"] = safetyquestionDict
+            safetyQuestionList = []
+            safetyQuestionList.append(input("QUESTION: "))
+            safetyQuestionList.append(input("ANSWER: "))
+  
+            setup["safetyquestion"] = safetyQuestionList
         else:
             setup["safetyquestion"] = None
     else:
