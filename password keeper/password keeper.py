@@ -55,8 +55,8 @@ def passwordMaker():
     while True:
         password = passwordGenerator()
         print("suggested password: %s"% password)
-        prompt = input("\n1. use suggested password\n2. new suggested password\n3. write own password\n>> ")
         while True:
+            prompt = input("\n1. use suggested password\n2. new suggested password\n3. write own password\n>> ")
             if valueError(prompt, "input is not an int"):
                 continue
             break
@@ -141,17 +141,41 @@ def encript(keyNumber):
         bytes.extend(ord(num) for num in char)
         ascii = bytes[index] * 2
         bytes[index] = bin(ascii)[2:]
+        if len(bytes[index]) != 8:
+            bytes[index] = "0" + bytes[index]
     byteString = ""
     for byte in bytes:
         byteString += byte
     print(byteString)
+    print(bytes)
     
-
     # shift letters by random number
     # convert to ascii
     # convert to binary
     # add together to get int
-         
+
+def decript(keyNumber):
+    key = getKeyByNumber(keyNumber)
+    encriptedPassword = data[key]
+    if not encriptedPassword:
+        return False
+    # 8 bits
+    counter = 0
+    bytes = []
+    byteString = ""
+    for index, bit in enumerate(encriptedPassword):
+        byteString += bit
+        counter += 1
+        if counter == 8:
+            bytes.append(byteString)
+            counter = 0
+            byteString = ""
+    print(bytes)
+    for index, byte in enumerate(bytes):
+        bytes[index] = int(int(byte, 2) / 2)
+        print(bytes[index])
+        bytes[index] = chr(bytes[index])
+    print(bytes)
     
 def setupKeeper():
     setup["setup"] = False
@@ -204,7 +228,9 @@ hidetime = setup["hidetime"]
 
 with open('password keeper.json') as dataFile:
     data = json.load(dataFile)
-print(encript(0))
+# print(encript(1))
+print(decript(1))
+exit()
 
 while True:
     print("1. see passwords\n2. add password\n3. delete password\n4. account list\n5. setup\n6. quit")
