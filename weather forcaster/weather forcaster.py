@@ -50,9 +50,20 @@ def centerdText(font, color, y_axis, text):
                  printText.get_width() / 2, y_axis))
     
 def neg(number):
-    if number < 0:
+    if number > 0:
         number = number * -1
     return number
+
+scrollCounter = 0
+def scroll(direction):
+    # 8715
+    global scrollCounter
+    if direction < 0:
+        if abs(scrollCounter) < abs(8715 - (screenHeight - 100)):
+            scrollCounter += direction * 100
+        else:
+            scrollCounter = -8715 + (screenHeight - 105)
+    print(scrollCounter)
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -88,25 +99,35 @@ pygame.key.set_repeat(400, 30)  # press every 50 ms after waiting 200 ms
 country = pygame_textinput.TextInputVisualizer()
 city = pygame_textinput.TextInputVisualizer()
 
+action = {
+    "mouseClicked": False, 
+}
+
 # Geef tweeletter-code van land (https://www.iban.com/country-codes)
-land = input("Geef tweeletter-code van land (Belgie = BE): ")
-# Geef stad:
-stad = input(f"Geef stad (in het Engels): ")
 # Geef API-key:
-API_key = "9da16052f332fd97fd4a46847cebc13f"
+APIKEY = "9da16052f332fd97fd4a46847cebc13f"
+
+JsonFilePath = "countrycodes.json"
+if os.path.isfile(JsonFilePath) is False:
+    raise Exception("File not found")
+with open(JsonFilePath) as filepath:
+    alpha2codes = json.load(filepath)
 
 # Stel de url  op, waarmee we JSON-data kunnen afhalen van openweathermap.org
-url = f"https://api.openweathermap.org/data/2.5/forecast?q={stad},{land}&appid={API_key}"
+# url = f"https://api.openweathermap.org/data/2.5/forecast?q={stad},{land}&appid={APIKEY}"
+# response_json = requests.get(url).json()
+# print(response_json)
 
-
-
-""" STAP 2: JSON-data via request afhalen van openweathermap.org endpoint """
-response_json = requests.get(url).json()
-
-print(response_json)
+def header():
+    pygame.draw.rect(display, lichtblauw, pygame.Rect(0, 0, screenWidth, 100))
 
 def countrybar():
-    pygame.draw.rect(display, )
+    countryButtonHeight = 0
+    vierkantdetectie(0, 100, 300, screenHeight - 100, grijs)
+    for countries in alpha2codes:
+        if button(5, 105 + countryButtonHeight + scrollCounter, 290, 30, h1, countries["Name"], zwart, groen, afvlakking=5) and action["mouseClicked"]:
+            print(countries["Code"])
+        countryButtonHeight += 35
 
 
 while True:
@@ -115,10 +136,21 @@ while True:
     
     countrybar()
     
+    header()
+    
     for event in eventsGet:
         if event.type == pygame.QUIT:
             exit()
-    
+        if event.type == pygame.WINDOWRESIZED:
+            getScreenInfo()
+            checkScreenSize()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            action["mouseClicked"] = True
+        if event.type == pygame.MOUSEBUTTONUP:
+            action["mouseClicked"] = False
+        if event.type == pygame.MOUSEWHEEL:
+            scroll(event.y)
+    pygame.display.flip()
     
     
     

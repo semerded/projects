@@ -130,6 +130,11 @@ def getKeyByNumber(keyNumber):
             return key
     return False
 
+def makeByte(byteinput: str):
+    while len(byteinput) < 8:
+        byteinput = "0" + byteinput
+    return byteinput
+
 
 def encript(keyNumber):
     key = getKeyByNumber(keyNumber)
@@ -137,13 +142,26 @@ def encript(keyNumber):
     if not decriptedPassword:
         return False
     bytes = []
+    byteString = ""
+    switchNumber = random.randint(0, len(decriptedPassword) - 1)
+    decriptedPassword = decriptedPassword[switchNumber:] + decriptedPassword[:switchNumber]
+    bytes.extend(ord(num) for num in str(switchNumber))
+    for byte in bytes:
+        byteString += "0" + bin(byte)[2:]
+        byteString = makeByte(byteString)
+
+        
+    byteString += "01111111"
+    print(bytes)
+    
+    bytes = []
     for index, char in enumerate(decriptedPassword):
         bytes.extend(ord(num) for num in char)
         ascii = bytes[index] * 2
         bytes[index] = bin(ascii)[2:]
         if len(bytes[index]) != 8:
             bytes[index] = "0" + bytes[index]
-    byteString = ""
+    
     for byte in bytes:
         byteString += byte
     print(byteString)
@@ -228,8 +246,8 @@ hidetime = setup["hidetime"]
 
 with open('password keeper.json') as dataFile:
     data = json.load(dataFile)
-# print(encript(1))
-print(decript(1))
+print(encript(1))
+# print(decript(1))
 exit()
 
 while True:
