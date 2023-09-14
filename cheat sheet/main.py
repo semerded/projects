@@ -15,7 +15,8 @@ default border radius = 5
 
 # global vars
 quitButton = inputFieldQuitButton = False
-inputStep = lineCounter = scrollCounter = 0
+inputStep = lineCounter = scrollCounter = editNumber = 0
+
 
 action = {
     "quitActive": False,
@@ -26,16 +27,17 @@ action = {
     "inputField": False,
     "mouseClick": False,
     "comfirmClose": False,
+    "editField": False,
     
 }
 
 # const vars
-JsonBuildUp = ["function", "name", "description"]
+JsonBuildUp = ["name", "description", "function"]
 
 
 # buttons on sticky top
-languageList = ["javascript", "arduino", "python"]
-languageColorList = [geel, turquise, blauw]
+languageList = ["javascript", "arduino", "python", "html"]
+languageColorList = [geel, turquise, blauw, oranje]
 LanguageColor = geel
 deleteItem = [False, 0]
 
@@ -151,6 +153,9 @@ inputDescription = pygame_textinput.TextInputVisualizer()
 inputFunction = pygame_textinput.TextInputVisualizer()
 inputList = [inputName, inputDescription, inputFunction]
 
+def emptyInput():
+    for input in inputList:
+        input.value = ""
 
 def stickyTop():
     global CheatLanguage, LanguageColor, quitButton, inputStep, scrollCounter
@@ -163,6 +168,8 @@ def stickyTop():
 
     # add button
     if button(screenWidth - 50 - 100, 5, 110, 40, h4, "add function", zwart, wit, afvlakking=5) and action["mouseClick"]:
+        emptyInput()
+        action["editField"] = False
         action["inputField"] = True
         inputStep = 0
 
@@ -189,7 +196,7 @@ def stickyTop():
         
 
 
-def inputField():
+def inputField(titleText, savebuttonText, editFile: bool, number: int | None = None, values: list = []):
     """
     breedte = 780
         helft: 390
@@ -207,13 +214,15 @@ def inputField():
         ((screenWidth / 2) + (790 / 2) - 35), ((screenHeight / 2) - (490 / 2) + 5), 30, 30, h1, "X", wit, inputFieldQuitColor, afvlakking=5)
     if inputFieldQuitButton and action["mouseClick"]:
         action["inputField"] = False
+        action["editField"] = False
 
     # inputs
     inputWidth = screenWidth / 2 - 380
-    centerdText(h1, zwart, screenHeight / 2 - 200, "INPUT A NEW FUNCTION")
-    
+    centerdText(h1, zwart, screenHeight / 2 - 200, titleText)
+    print(number)
 
     # input name
+    centerdText(h4, zwart, screenHeight / 2 - 130, "Function Name")
     pygame.draw.rect(display, wit, pygame.Rect(screenWidth / 2 - 385, screenHeight / 2 - 110, 760, 50), border_radius=5)
     if inputStep == 0:
         inputName.update(eventGet)
@@ -222,6 +231,7 @@ def inputField():
     display.blit(inputName.surface, (inputWidth, screenHeight / 2 - 100))
 
     # input description
+    centerdText(h4, zwart, screenHeight / 2 - 30, "Function Description")
     pygame.draw.rect(display, wit, pygame.Rect(screenWidth / 2 - 385, screenHeight / 2 - 10, 760, 50), border_radius=5)
 
     if inputStep == 1:
@@ -231,6 +241,7 @@ def inputField():
     display.blit(inputDescription.surface, (inputWidth, screenHeight / 2))
     
     # input function
+    centerdText(h4, zwart, screenHeight / 2 + 70, "Function")
     pygame.draw.rect(display, wit, pygame.Rect(screenWidth / 2 - 385, screenHeight / 2 + 90, 760, 50), border_radius=5)
 
     if inputStep == 2:
@@ -246,7 +257,7 @@ def inputField():
         saveButtonColor = rood
         saveCheck = False
     pygame.draw.rect(display, zwart, pygame.Rect(screenWidth / 2 - 105, screenHeight / 2 + 175, 210, 60), border_radius=5)
-    if button(screenWidth / 2 - 100, screenHeight / 2 + 180, 200, 50, h1, "Save Function", wit, saveButtonColor, afvlakking=5) and saveCheck and action["mouseClick"]:
+    if button(screenWidth / 2 - 100, screenHeight / 2 + 180, 200, 50, h1, savebuttonText, wit, saveButtonColor, afvlakking=5) and saveCheck and action["mouseClick"]:
         addFunctionDict = {
             "name": inputName.value,
             "description": inputDescription.value,
@@ -283,7 +294,7 @@ def confirmPopUp(text):
 
 
 def placeTextFromJson():
-    global lineCounter, deleteItem
+    global lineCounter, deleteItem, editNumber
     lineCounter = 0
     
 
@@ -292,10 +303,14 @@ def placeTextFromJson():
             # skip item if the search value doesn't contain the name
             if not search.value.lower() in CheatLanguage[i]['name']:
                 continue
+            
+        if button(screenWidth - 110, 100 + lineCounter + scrollCounter, 30, 30, h1, "E", wit, blauw, afvlakking=5) and action["mouseClick"]:
+            action["editField"] = True
+            editNumber = i
         if button(screenWidth - 70, 100 + lineCounter + scrollCounter, 30, 30, h1, "x", wit, rood, afvlakking=5) and action["mouseClick"]:
             deleteItem[0] = True
             deleteItem[1] = i
-        if button(screenWidth - 100, 140 + lineCounter + scrollCounter, 60, 30, h1, "copy", zwart, LanguageColor, afvlakking=5) and action["mouseClick"]:
+        if button(screenWidth - 110, 140 + lineCounter + scrollCounter, 70, 30, h1, "copy", zwart, LanguageColor, afvlakking=5) and action["mouseClick"]:
             pyperclip.copy(f"{CheatLanguage[i]['function']}")
         # name of function in green
         text(h1, groen, 10, 100 + lineCounter + scrollCounter, f"{CheatLanguage[i]['name']}")
@@ -362,7 +377,12 @@ while True:
         text(h1, zwart, 10, 60, "Crtl + F to search a title")
 
     if action["inputField"]:
-        inputField()
+        inputField("INPUT A NEW FUNCTION", "Save Function", False)
+        
+    if action["editField"]:
+        inputField("EDIT FUNCTION", "Update Function", True, editNumber, [CheatLanguage[editNumber]['name'], CheatLanguage[editNumber]['description'], CheatLanguage[editNumber]['function']])
+        for index, input in enumerate(inputList):
+            input.value = CheatLanguage[editNumber][JsonBuildUp[index]]
         
     if action["comfirmClose"]:
         confirm = confirmPopUp("close app?")

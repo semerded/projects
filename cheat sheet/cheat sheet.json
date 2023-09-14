@@ -22,6 +22,17 @@
             "name": "vierkant detectie",
             "description": "geeft true terug als de muis zich in het vierkant bevindt",
             "function": "def vierkantdetectie(xpositie: int, ypositie: int, lengte: int, hoogte: int, kleurvierkant: tuple[int, int, int] = (0, 0, 0), rand: int = 0, afvlakking: int = -1):\n\n    global mouse_pos\n    rect = pygame.draw.rect(display, kleurvierkant, pygame.Rect(\n        xpositie, ypositie, lengte, hoogte), rand, afvlakking)\n    mouse_pos = pygame.mouse.get_pos()\n    if rect.collidepoint(mouse_pos):\n        return True\n    return False"
+        },
+        {
+            "name": "write to json",
+            "description": "writes the dict to the provided json path",
+            "function": "with open(JsonFilePath, 'w') as json_file:\n                json.dump(savefile, json_file, indent = 4, separators=(',',': '))"
+        },
+        {
+            "name": "read from json",
+            "description": "reads the dict from the json file with the provided path",
+            "function": "import json, os\nif os.path.isfile(JsonFilePath) is False:\n    raise Exception(\"File not found\")\nwith open(JsonFilePath) as filepath:\n    savefile = json.load(filepath)"
         }
-    ]
+    ],
+    "html": []
 }
