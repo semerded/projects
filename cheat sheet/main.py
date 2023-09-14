@@ -32,7 +32,7 @@ action = {
 }
 
 # const vars
-JsonBuildUp = ["function", "name", "description"]
+JsonBuildUp = ["name", "description", "function"]
 
 
 # buttons on sticky top
@@ -153,6 +153,9 @@ inputDescription = pygame_textinput.TextInputVisualizer()
 inputFunction = pygame_textinput.TextInputVisualizer()
 inputList = [inputName, inputDescription, inputFunction]
 
+def emptyInput():
+    for input in inputList:
+        input.value = ""
 
 def stickyTop():
     global CheatLanguage, LanguageColor, quitButton, inputStep, scrollCounter
@@ -165,6 +168,8 @@ def stickyTop():
 
     # add button
     if button(screenWidth - 50 - 100, 5, 110, 40, h4, "add function", zwart, wit, afvlakking=5) and action["mouseClick"]:
+        emptyInput()
+        action["editField"] = False
         action["inputField"] = True
         inputStep = 0
 
@@ -376,7 +381,8 @@ while True:
         
     if action["editField"]:
         inputField("EDIT FUNCTION", "Update Function", True, editNumber, [CheatLanguage[editNumber]['name'], CheatLanguage[editNumber]['description'], CheatLanguage[editNumber]['function']])
-
+        for index, input in enumerate(inputList):
+            input.value = CheatLanguage[editNumber][JsonBuildUp[index]]
         
     if action["comfirmClose"]:
         confirm = confirmPopUp("close app?")
