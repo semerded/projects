@@ -103,6 +103,8 @@ cityInput = pygame_textinput.TextInputVisualizer()
 
 
 country = ""
+validInput = False
+
 action = {
     "mouseClicked": False, 
     "cityInput": False,
@@ -116,39 +118,73 @@ if os.path.isfile(JsonFilePath) is False:
 with open(JsonFilePath) as filepath:
     alpha2codes = json.load(filepath)
 
-# Stel de url  op, waarmee we JSON-data kunnen afhalen van openweathermap.org
-# url = f"https://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={APIKEY}"
-# response_json = requests.get(url).json()
-# print(response_json)
+
+
+def requestAPI(city):
+    # website: openweathermap.org
+
+    url = f"https://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={APIKEY}"
+    response_json = requests.get(url).json()
+    if response_json['cod'] == '200':
+        print("city found")
+    elif response_json['cod'] == '404':
+        print('city not found')
+    else:
+        print("something went wrong")
 
 def header():
-    pygame.draw.rect(display, lichtblauw, pygame.Rect(0, 0, screenWidth, 100))
+    pygame.draw.rect(display, LIGHTBLUE, pygame.Rect(0, 0, screenWidth, 100))
     
 
 def countrybar():
     global country
     countryButtonHeight = 0
-    vierkantdetectie(0, 100, 300, screenHeight - 100, grijs)
+    vierkantdetectie(0, 100, 300, screenHeight - 100, LESSWHITE)
     for countries in alpha2codes:
-        if button(5, 105 + countryButtonHeight + scrollCounter, 290, 30, h1, countries["Name"], zwart, groen, afvlakking=5) and action["mouseClicked"]:
+        buttonColor = GREEN if country == countries["Code"] else YELLOW
+        if button(5, 105 + countryButtonHeight + scrollCounter, 290, 30, h1, countries["Name"], BLACK, buttonColor, afvlakking=5) and action["mouseClicked"]:
             country = countries["Code"]
             action["cityInput"] = True
             
         countryButtonHeight += 35
 
 def inputField():
+    global validInput
+    searchBarColor = GREY if action["cityInput"] else LESSWHITE
+    searchBar = vierkantdetectie(300, 100, screenWidth - 160 - 300, 40, searchBarColor)
+    if searchBar and action["mouseClicked"]:
+        action["cityInput"] = True
+    if not searchBar and action["mouseClicked"]:
+        action["cityInput"] = False
     
+    if action["cityInput"]:
+        cityInput.update(eventsGet)
+    else:
+        cityInput.cursor_visible = False
+    display.blit(cityInput.surface, (310, 105))
+    if country != "" and cityInput.value != "":
+        validInput = True
+    else:
+        validInput = False
+    
+    buttonColor = GREEN if validInput else RED
+    if button(screenWidth - 155, 105, 150, 30, h1, "Search City", BLACK, buttonColor, afvlakking=5) and action["mouseClicked"]:
+        if validInput:
+            requestAPI(cityInput.value)
+            action["cityInput"] = False
+            cityInput.value = ""
+        else:
+            action["cityInput"] = True
 
 while True:
-    display.fill(wit)
+    display.fill(WHITE)
     eventsGet = pygame.event.get()
-    
+    inputField()
+
     countrybar()
     
     header()
     
-    if action["cityInput"]:
-        inputField()
     
     for event in eventsGet:
         if event.type == pygame.QUIT:

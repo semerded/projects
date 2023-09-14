@@ -105,11 +105,11 @@
     },
     {
         "Code": "BO",
-        "Name": "Bolivia, Plurinational State of"
+        "Name": "Bolivia"
     },
     {
         "Code": "BQ",
-        "Name": "Bonaire, Sint Eustatius and Saba"
+        "Name": "Bonaire"
     },
     {
         "Code": "BA",
@@ -129,7 +129,7 @@
     },
     {
         "Code": "IO",
-        "Name": "British Indian Ocean Territory"
+        "Name": "British Indian Ocean Terr."
     },
     {
         "Code": "BN",
@@ -205,7 +205,7 @@
     },
     {
         "Code": "CD",
-        "Name": "Congo, the Democratic Republic of the"
+        "Name": "D.R. Congo"
     },
     {
         "Code": "CK",
@@ -217,7 +217,7 @@
     },
     {
         "Code": "CI",
-        "Name": "Côte d'Ivoire"
+        "Name": "Cote d'Ivoire"
     },
     {
         "Code": "HR",
@@ -229,7 +229,7 @@
     },
     {
         "Code": "CW",
-        "Name": "Curaçao"
+        "Name": "Curacao"
     },
     {
         "Code": "CY",
@@ -285,7 +285,7 @@
     },
     {
         "Code": "FK",
-        "Name": "Falkland Islands (Malvinas)"
+        "Name": "Falkland Islands"
     },
     {
         "Code": "FO",
@@ -313,7 +313,7 @@
     },
     {
         "Code": "TF",
-        "Name": "French Southern Territories"
+        "Name": "French Southern Terr."
     },
     {
         "Code": "GA",
@@ -385,11 +385,11 @@
     },
     {
         "Code": "HM",
-        "Name": "Heard Island and McDonald Islands"
+        "Name": "HeardMcDonald Islands"
     },
     {
         "Code": "VA",
-        "Name": "Holy See (Vatican City State)"
+        "Name": "Vatican City"
     },
     {
         "Code": "HN",
@@ -417,7 +417,7 @@
     },
     {
         "Code": "IR",
-        "Name": "Iran, Islamic Republic of"
+        "Name": "Iran"
     },
     {
         "Code": "IQ",
@@ -469,11 +469,11 @@
     },
     {
         "Code": "KP",
-        "Name": "Korea, Democratic People's Republic of"
+        "Name": "North Korea"
     },
     {
         "Code": "KR",
-        "Name": "Korea, Republic of"
+        "Name": "South Korea"
     },
     {
         "Code": "KW",
@@ -485,7 +485,7 @@
     },
     {
         "Code": "LA",
-        "Name": "Lao People's Democratic Republic"
+        "Name": "Laos"
     },
     {
         "Code": "LV",
@@ -525,7 +525,7 @@
     },
     {
         "Code": "MK",
-        "Name": "Macedonia, the Former Yugoslav Republic of"
+        "Name": "Macedonia"
     },
     {
         "Code": "MG",
@@ -577,11 +577,11 @@
     },
     {
         "Code": "FM",
-        "Name": "Micronesia, Federated States of"
+        "Name": "Micronesia"
     },
     {
         "Code": "MD",
-        "Name": "Moldova, Republic of"
+        "Name": "Moldova"
     },
     {
         "Code": "MC",
@@ -721,7 +721,7 @@
     },
     {
         "Code": "RE",
-        "Name": "Réunion"
+        "Name": "Reunion"
     },
     {
         "Code": "RO",
@@ -737,11 +737,11 @@
     },
     {
         "Code": "BL",
-        "Name": "Saint Barthélemy"
+        "Name": "Saint Barthelemy"
     },
     {
         "Code": "SH",
-        "Name": "Saint Helena, Ascension and Tristan da Cunha"
+        "Name": "Saint Helena"
     },
     {
         "Code": "KN",
@@ -761,7 +761,7 @@
     },
     {
         "Code": "VC",
-        "Name": "Saint Vincent and the Grenadines"
+        "Name": "Saint Vincent-Grenadines"
     },
     {
         "Code": "WS",
@@ -825,7 +825,7 @@
     },
     {
         "Code": "GS",
-        "Name": "South Georgia and the South Sandwich Islands"
+        "Name": "Sandwich Islands"
     },
     {
         "Code": "SS",
@@ -865,11 +865,11 @@
     },
     {
         "Code": "SY",
-        "Name": "Syrian Arab Republic"
+        "Name": "Syria"
     },
     {
         "Code": "TW",
-        "Name": "Taiwan, Province of China"
+        "Name": "Taiwan"
     },
     {
         "Code": "TJ",
@@ -877,7 +877,7 @@
     },
     {
         "Code": "TZ",
-        "Name": "Tanzania, United Republic of"
+        "Name": "Tanzania"
     },
     {
         "Code": "TH",
@@ -944,10 +944,6 @@
         "Name": "United States"
     },
     {
-        "Code": "UM",
-        "Name": "United States Minor Outlying Islands"
-    },
-    {
         "Code": "UY",
         "Name": "Uruguay"
     },
@@ -961,7 +957,7 @@
     },
     {
         "Code": "VE",
-        "Name": "Venezuela, Bolivarian Republic of"
+        "Name": "Venezuela"
     },
     {
         "Code": "VN",
