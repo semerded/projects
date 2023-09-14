@@ -268,6 +268,8 @@ def inputField(titleText, savebuttonText, editFile: bool, number: int | None = N
             json.dump(savefile, json_file, indent = 4, separators=(',',': '))
         inputName.value = inputDescription.value = inputFunction.value = ""
         inputStep = 0
+        action["editField"] = False
+        action["inputField"] = False
         
     
     
@@ -304,14 +306,15 @@ def placeTextFromJson():
             if not search.value.lower() in CheatLanguage[i]['name']:
                 continue
             
-        if button(screenWidth - 110, 100 + lineCounter + scrollCounter, 30, 30, h1, "E", wit, blauw, afvlakking=5) and action["mouseClick"]:
+        if button(screenWidth - 110, 100 + lineCounter + scrollCounter, 30, 30, h1, "E", wit, blauw, afvlakking=5) and action["mouseClick"]: # edit button
             action["editField"] = True
             editNumber = i
-        if button(screenWidth - 70, 100 + lineCounter + scrollCounter, 30, 30, h1, "x", wit, rood, afvlakking=5) and action["mouseClick"]:
+        if button(screenWidth - 70, 100 + lineCounter + scrollCounter, 30, 30, h1, "x", wit, rood, afvlakking=5) and action["mouseClick"]: # copy button
             deleteItem[0] = True
             deleteItem[1] = i
-        if button(screenWidth - 110, 140 + lineCounter + scrollCounter, 70, 30, h1, "copy", zwart, LanguageColor, afvlakking=5) and action["mouseClick"]:
+        if button(screenWidth - 110, 140 + lineCounter + scrollCounter, 70, 30, h1, "copy", zwart, LanguageColor, afvlakking=5) and action["mouseClick"]: # delete button
             pyperclip.copy(f"{CheatLanguage[i]['function']}")
+            
         # name of function in green
         text(h1, groen, 10, 100 + lineCounter + scrollCounter, f"{CheatLanguage[i]['name']}")
         lineCounter += 30
@@ -402,7 +405,6 @@ while True:
             deleteItem[0] = False
         elif confirm == False:
             deleteItem[0] = False
-   
 
     # events
     for event in eventGet:

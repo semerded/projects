@@ -103,6 +103,7 @@ cityInput = pygame_textinput.TextInputVisualizer()
 
 
 country = ""
+status = -1
 validInput = False
 
 action = {
@@ -121,16 +122,17 @@ with open(JsonFilePath) as filepath:
 
 
 def requestAPI(city):
+    global status
     # website: openweathermap.org
 
     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={APIKEY}"
     response_json = requests.get(url).json()
     if response_json['cod'] == '200':
-        print("city found")
+        status = 200
     elif response_json['cod'] == '404':
-        print('city not found')
+        status = 404
     else:
-        print("something went wrong")
+        status = 0
 
 def header():
     pygame.draw.rect(display, LIGHTBLUE, pygame.Rect(0, 0, screenWidth, 100))
@@ -175,7 +177,19 @@ def inputField():
             cityInput.value = ""
         else:
             action["cityInput"] = True
+            
+class ShowResult:
+    workwidth = screenWidth - 300
+    workheight = screenHeight - 100
 
+    def Weather():
+        pass
+
+    def NotFound():
+        pass
+
+    def rror():
+        pass
 while True:
     display.fill(WHITE)
     eventsGet = pygame.event.get()
@@ -184,6 +198,14 @@ while True:
     countrybar()
     
     header()
+    
+    # check status
+    if status == 200:
+        ShowResult.Weather()
+    elif status == 404:
+        ShowResult.NotFound()
+    else:
+        ShowResult.Error()
     
     
     for event in eventsGet:
