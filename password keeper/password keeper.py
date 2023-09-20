@@ -51,6 +51,7 @@ def passwordGenerator(lengte: int = 12, kleine_letters: bool = True, hoofdletter
     return wachtwoord
     
 def passwordMaker():
+    print("-~"*20)
     print("\nwelcome to password maker\n")
     while True:
         password = passwordGenerator()
@@ -86,7 +87,7 @@ with open('password keeper setup.json') as setupFile: # open file
 def askSafetyQuestions():
     print(setup["safetyquestion"][0])
     answer = input("answer: ")
-    if answer == setup["safetyquestion"][1]:
+    if answer == decript(setup["safetyquestion"][1]):
         return True
     return False
     
@@ -100,7 +101,7 @@ def askPassword():
     if setup["password"] != None:
         for i in range(3):
             appPassword = input("\napp password: ")
-            if appPassword == setup["password"]:
+            if appPassword == decript(setup["password"]):
                 correct = True
                 break
             correct = False
@@ -131,28 +132,27 @@ def getKeyByNumber(keyNumber):
     return False
 
 def makeByte(byteinput: str):
-    while len(byteinput) < 8:
+    while len(byteinput) != 8:
         byteinput = "0" + byteinput
     return byteinput
 
 
-def encript(keyNumber):
-    key = getKeyByNumber(keyNumber)
-    decriptedPassword = data[key]
+def encript(decriptedPassword):
     if not decriptedPassword:
         return False
     bytes = []
     byteString = ""
     switchNumber = random.randint(0, len(decriptedPassword) - 1)
+    
     decriptedPassword = decriptedPassword[switchNumber:] + decriptedPassword[:switchNumber]
     bytes.extend(ord(num) for num in str(switchNumber))
-    for byte in bytes:
-        byteString += "0" + bin(byte)[2:]
+    for ascii in bytes:
+        ascii *= 2
+        byteString += bin(ascii)[2:]
         byteString = makeByte(byteString)
 
         
-    byteString += "01111111"
-    print(bytes)
+    byteString += "11111111"
     
     bytes = []
     for index, char in enumerate(decriptedPassword):
@@ -164,17 +164,14 @@ def encript(keyNumber):
     
     for byte in bytes:
         byteString += byte
-    print(byteString)
-    print(bytes)
+    return byteString
     
     # shift letters by random number
     # convert to ascii
     # convert to binary
     # add together to get int
 
-def decript(keyNumber):
-    key = getKeyByNumber(keyNumber)
-    encriptedPassword = data[key]
+def decript(encriptedPassword):
     if not encriptedPassword:
         return False
     # 8 bits
@@ -188,12 +185,24 @@ def decript(keyNumber):
             bytes.append(byteString)
             counter = 0
             byteString = ""
-    print(bytes)
     for index, byte in enumerate(bytes):
         bytes[index] = int(int(byte, 2) / 2)
-        print(bytes[index])
         bytes[index] = chr(bytes[index])
-    print(bytes)
+        
+    switchNumber = ""
+    while True:
+        if bytes[0] != "\x7f":   
+            switchNumber += bytes.pop(0)
+        else:
+            bytes.pop(0)
+            break
+    decritpedPassword = ""
+    for letter in bytes:
+        decritpedPassword += letter
+    switchNumber = len(decritpedPassword) - int(switchNumber)
+    decritpedPassword = decritpedPassword[switchNumber:] + decritpedPassword[:switchNumber]
+    
+    return decritpedPassword
     
 def setupKeeper():
     setup["setup"] = False
@@ -215,7 +224,7 @@ def setupKeeper():
     if password.lower() == "n":
         setup["password"] = None
     else:
-        setup["password"] = passwordMaker()
+        setup["password"] = encript(passwordMaker())
         
     # beveiligingsvraag
     if setup["password"] != None:
@@ -223,7 +232,7 @@ def setupKeeper():
         if prompt.lower() == "y":
             safetyQuestionList = []
             safetyQuestionList.append(input("QUESTION: "))
-            safetyQuestionList.append(input("ANSWER: "))
+            safetyQuestionList.append(encript(input("ANSWER: ")))
   
             setup["safetyquestion"] = safetyQuestionList
         else:
@@ -246,19 +255,49 @@ hidetime = setup["hidetime"]
 
 with open('password keeper.json') as dataFile:
     data = json.load(dataFile)
-print(encript(1))
-# print(decript(1))
-exit()
+
 
 while True:
-    print("1. see passwords\n2. add password\n3. delete password\n4. account list\n5. setup\n6. quit")
+    print("\n1. see passwords\n2. add password\n3. delete password\n4. account list\n5. setup\n6. quit")
     prompt = input("input field: ")
     if valueError(prompt, "input was not an int"):
         continue
     prompt = int(prompt)
-    if prompt == 4:
+    if prompt == 2:
+        accountName = input("accountName: ")
+        password = encript(passwordMaker())
+        data[accountName] = password
+        with open("password keeper.json", 'w') as json_file:
+            json.dump(data, json_file, indent = 4, separators=(',',': '))
+        
+    if prompt == 3:
+        counter = 0
+        print()
         for key in data:
-            print(key)
+            counter += 1
+            print(f"{counter}. {key}")
+        print("password list")
+        accountName = input("delete account: ")
+        print(f"password to delete: {accountName}")
+        password = input(">>> ")
+        if password == decript(data[accountName]):
+            data.pop(accountName)
+            print(f"\n{accountName} deleted")
+        else:
+            print("password incorrect\naborting...")
+        with open("password keeper.json", 'w') as json_file:
+            json.dump(data, json_file, indent = 4, separators=(',',': '))
+        print("---------------------------------------------------------")
+        
+    if prompt == 4:
+        counter = 0
+        print()
+        print("-~"*20)
+        print("\naccounts saved: \n")
+        for key in data:
+            counter += 1
+            print(f"\t{counter}. {key}")
+        input("\npress enter to continue")
     if prompt == 5:
         setupKeeper()
     if prompt == 6:

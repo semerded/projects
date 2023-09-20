@@ -188,7 +188,7 @@ class ShowResult:
     def NotFound():
         pass
 
-    def rror():
+    def Error():
         pass
 while True:
     display.fill(WHITE)
