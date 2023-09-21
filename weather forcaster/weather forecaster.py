@@ -44,10 +44,9 @@ def text(font, color, x_axis, y_axis, text):
     display.blit(printText, (x_axis, y_axis))
 
 
-def centerdText(font, color, y_axis, text):
+def centerdText(font, color, xCord: tuple[float, float], yCord: tuple[float, float], text):
     printText = font.render(text, True, color)
-    display.blit(printText, (screenWidth / 2 -
-                 printText.get_width() / 2, y_axis))
+    display.blit(printText, ((xCord[1] + xCord[0]) / 2 - printText.get_width() / 2, (yCord[1] + yCord[0]) / 2 - printText.get_height() / 2))
     
 def neg(number):
     if number > 0:
@@ -95,6 +94,8 @@ checkScreenSize()
 
 h1 = pygame.font.SysFont(pygame.font.get_default_font(), 32)
 h4 = pygame.font.SysFont(pygame.font.get_default_font(), 24)
+bigText = pygame.font.SysFont(pygame.font.get_default_font(), 60)
+errorFont = pygame.font.SysFont(pygame.font.get_default_font(), 150)
 defaultTextSize = pygame.font.SysFont('arial', 20)
 clock = pygame.time.Clock()
 pygame.display.set_caption("weather forcaster")
@@ -122,7 +123,7 @@ with open(JsonFilePath) as filepath:
 
 
 def requestAPI(city):
-    global status
+    global status, response_json
     # website: openweathermap.org
 
     url = f"https://api.openweathermap.org/data/2.5/forecast?q={city},{country}&appid={APIKEY}"
@@ -178,18 +179,40 @@ def inputField():
         else:
             action["cityInput"] = True
             
-class ShowResult:
-    workwidth = screenWidth - 300
-    workheight = screenHeight - 100
+"""experimental"""
+with open("test.json") as filepath:
+        response_json = json.load(filepath)  
+        
+def K_to_C(temperatuur: float):
+    return(temperatuur - 273.15) 
+               
+workwidth = screenWidth - 300
+workheight = screenHeight - 140
+def ShowWeather():
 
-    def Weather():
-        pass
+    # top text
+    centerdText(bigText, GREEN, (0, screenWidth), (0, 100), f"{response_json['city']['name']}, {response_json['city']['country']}")
+    lineCounter = 0
+    for message in response_json["list"]:
+        text(h4, GREEN, 310, 150 + lineCounter, f"{message['dt_txt']}")
+        lineCounter += 20
+        text(h1, BLACK, 310, 150 + lineCounter, f"{message['weather'][0]['description']}")
+        lineCounter += 30
+        text(h1, ORANGE, 340, 150 + lineCounter, "Main info")
+        lineCounter += 30
+        text(h4, GRAY, 370, 150 + lineCounter, f"{round(K_to_C(float(message['main']['temp'])), 2)}°C")
+        lineCounter += 20
+        text(h4, GRAY, 370, 150 + lineCounter, f"feels like {round(K_to_C(float(message['main']['feels_like'])), 2)}°C")
+        lineCounter += 20
+        text(h4, LIGHTBLUE, 370, 150 + lineCounter, f"humidity: {message['main']['humidity']}%")
+        lineCounter += 20
+        
+def ShowNotFound():
+    centerdText(errorFont, RED, (300, workwidth), (140, workheight), "City Not Found")
 
-    def NotFound():
-        pass
 
-    def Error():
-        pass
+def ShowError():
+    centerdText(errorFont, RED, (300, screenWidth), (140, screenHeight), "An Error Occurd")
 while True:
     display.fill(WHITE)
     eventsGet = pygame.event.get()
@@ -200,12 +223,12 @@ while True:
     header()
     
     # check status
-    if status == 200:
-        ShowResult.Weather()
+    if status == -1:
+        ShowWeather()
     elif status == 404:
-        ShowResult.NotFound()
-    else:
-        ShowResult.Error()
+        ShowNotFound()
+    elif status != -1:
+        ShowError()
     
     
     for event in eventsGet:

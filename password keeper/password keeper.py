@@ -96,7 +96,16 @@ def askSafetyQuestions():
     
 def askPassword():
     print("\npassword keeper_")
-    sleep(1)
+    for i in range(5):
+        print("loading.  \033[A")
+        sleep(0.2)
+        print("loading.. \033[A")
+        sleep(0.2)
+        print("loading...\033[A")
+        sleep(0.2)
+ 
+      
+
     print("welcome back %s" % setup["name"])
     if setup["password"] != None:
         for i in range(3):
@@ -263,6 +272,27 @@ while True:
     if valueError(prompt, "input was not an int"):
         continue
     prompt = int(prompt)
+    if prompt == 1:
+        counter = 0
+        print()
+        print("-~"*20)
+        print("\naccounts saved: \n")
+        for key in data:
+            counter += 1
+            print(f"\t{counter}. {key}")
+        print("see password of which account?")
+        accountName = input(">>> ") 
+        if accountName in data:
+            password = decript(data[accountName])
+            print(password)
+            if setup["hidetime"] != None:
+                sleep(setup["hidetime"])
+                whitespace = " " * len(password)
+                print (f"\033[A{whitespace}\033[A")
+
+        else:
+            print("\naccount not found\n")
+
     if prompt == 2:
         accountName = input("accountName: ")
         password = encript(passwordMaker())
