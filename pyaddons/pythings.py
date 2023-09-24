@@ -2,11 +2,19 @@ import pygame, random, os, pygame_textinput
 
 
 
-    
+
     
 
 
 class button:
+    """
+    make easy buttons in pygame
+    standard buttons come with a gray color, specifiy the width and height
+    with ```buttonName.place(pygameDisplay, (Xposition, Yposition))```
+    add borders and centerd text to your button to truly customise the button
+    
+    
+    """
     def __init__(self, width: float, height: float, color: tuple[int,int,int] = (120,120,120), radius: int = -1, borderThickness: int = -1):
         self._width = width
         self._height = height
@@ -20,8 +28,17 @@ class button:
         self.borderThickness = 0
         
         self.mouseInButton = False
+        self.clickedNotInButton = False
+        self.mouseButtonDown = False
+        self.mouseButtonUp = True
         self.textAvailable = False
         self.borderAvailable = False
+        self.highFlankDetection = False
+        self.lowFlankDetection = False
+        self.events = None
+        self.clickedNotInButton = False
+        self.releasedNotInButton = False
+
         
     def __repr__(self) -> str:
         return f"{self._width, self._height}"
@@ -33,7 +50,7 @@ class button:
         self.textColor = color
         self.textAvailable = True
         
-    def border(self, borderWidth: int, borderColor: tuple[int,int,int] = (0,0,0), borderRadius: int = -1, borderLeft: int = -1, borderRight: int = -1, borderTop: int = -1, borderBottom: int = -1):
+    def border(self, borderWidth: int, borderColor: tuple[int,int,int] = (0,0,0), borderRadius: int = 0, borderLeft: int = 0, borderRight: int = 0, borderTop: int = 0, borderBottom: int = 0):
         self.borderThickness = 0
         self.borderWidth = borderWidth
         self.borderColor = borderColor
@@ -43,6 +60,7 @@ class button:
         self.borderTop = borderTop
         self.borderBottom = borderBottom
         self.borderAvailable = True
+        self.buttonClicked = False
         
     def radius(self, radiusTopLeft: int = -1, radiusTopRight: int = -1, radiusBottomLeft: int = -1, radiusBottomRight: int = -1):
         self.radiusTL = radiusTopLeft
@@ -58,27 +76,125 @@ class button:
     def recolor(self, newColor: tuple[int,int,int]):
         self.buttonColor = newColor
         
-    def onMouseOver(self, before, after):
-        pass
+    def __checkButtonStatus__(self):
+        if self.events != None:
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseButtonUp = False
+                    self.highFlankDetection = True
+                    self.mouseButtonDown = True
+                    if self.mouseInButton == False:
+                        self.clickedNotInButton = True
+                    else:
+                        self.clickedNotInButton = False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouseButtonDown = False
+                    self.lowFlankDetection = True
+                    self.mouseButtonUp = True
+                    if self.mouseInButton == False:
+                        self.releasedNotInButton = True
+                    else:
+                        self.releasedNotInButton = False
+                    
+        else:
+            raise SyntaxError("place the '.place' methode before any '.on~' methods")
         
-    def place(self, display, position: tuple[float, float]):
+    def onMouseOver(self, action):
+        if self.mouseInButton:
+            action()
+            
+    
+    def onHold(self, action = None, holdAfterMouseLeave: bool = False):
+        if self.mouseInButton and self.mouseButtonDown and self.clickedNotInButton == False:
+            self.buttonClicked = True
+            if action != None:
+                action()
+        else:
+            self.buttonClicked = False
+        if holdAfterMouseLeave:
+            if self.mouseButtonDown and self.clickedNotInButton == False:
+                self.buttonClicked = True
+            else:
+                self.buttonClicked = False
+        if self.mouseButtonUp:
+            self.buttonClicked = False
+            
+                
+        return self.buttonClicked
+            
+    
+    def onClick(self, action,  actionOnRelease: bool = False): # TODO
+        if self.mouseButtonDown and not actionOnRelease: 
+            if self.mouseInButton and self.highFlankDetection and self.clickedNotInButton == False:
+                action(True)
+                self.highFlankDetection = False
+
+        if self.mouseButtonUp and actionOnRelease and self.clickedNotInButton == False:
+            if self.mouseInButton and self.lowFlankDetection and self.releasedNotInButton == False:
+                action(False)
+                self.lowFlankDetection = False
+        
+        
+        
+        # for event in events:
+        #     if event.type == pygame.MOUSEBUTTONDOWN:
+        #         if self.mouseInButton == False:
+        #             self.mouseButtonDown = True
+        #             self.clickedNotInButton = True
+        #         else:
+        #             self.mouseButtonDown = True
+        #             self.clickedNotInButton = False
+        #     if event.type == pygame.MOUSEBUTTONUP:
+        #         self.clickedNotInButton = False
+        #         self.mouseButtonDown = False
+                
+        # if self.mouseInButton and self.mouseButtonDown and not self.clickedNotInButton and not actionOnRelease:
+        #     self.buttonClicked = True
+        #     action()
+            
+        # if self.mouseButtonDown == False or self.mouseInButton == False:
+        #     self.buttonClicked = False
+        
+        # if self.mouseButtonDown and self.mouseInButton == False:
+        #     self.clickedNotInButton = True
+            
+        # return self.buttonClicked
+        
+    def place(self, display, events, position: tuple[float, float]):
+        self.events = events
+        self.__checkButtonStatus__()
+
+        # print the border if the user provides a border
+        if self.borderAvailable:
+            if self.borderWidth <= 0:
+                BShift = self.borderWidth / 2
+                pygame.draw.rect(display, self.borderColor, pygame.Rect(position[0] - BShift, position[1] - BShift, self._width + self.borderWidth, self._height + self.borderWidth), border_radius=self.borerRadius)
+
+            elif self.borderBottom <= 0 or self.borderTop <= 0 or self.borderLeft <= 0 or self.borderRight <= 0:
+                pygame.draw.rect(display, self.borderColor, pygame.Rect(position[0] - self.borderLeft, position[1] - self.borderTop , self._width + self.borderLeft + self.borderRight, self._height + self.borderTop + self.borderBottom), border_radius=self.borerRadius)
+           
+        # print button
         buttonRect = pygame.draw.rect(display, self.buttonColor, pygame.Rect(position[0], position[1], self._width, self._height), self.borderThickness , self._radius, self.radiusTL, self.radiusTR, self.radiusBL, self.radiusBR)
+        
+        # print text in the middle of the button if the user provides text
         if self.textAvailable:
             printText = self.textFont.render(self.textMessage, True, self.textColor)
             display.blit(printText, (position[0] + self._width / 2 - printText.get_width() / 2, position[1] + self._height / 2 - printText.get_height() / 2))
-
-            
-        if self.borderAvailable:
-            borderRect = pygame.draw.rect(display, self.borderColor, pygame.Rect(), border_radius=self.borerRadius)
-            
+    
+         
         mouse_pos = pygame.mouse.get_pos()
         if buttonRect.collidepoint(mouse_pos):
             self.mouseInButton = True
             return True
         self.mouseInButton = False
         return False
-            
     
+class text():
+    def __init__(self, inputText: str):
+        self.inputText = inputText
+        
+    
+            
 class color:
     RED = (255,0,0)
     ORANGE = (255,80,0)
@@ -121,16 +237,22 @@ if __name__ == "__main__":
     
     display = pygame.display.set_mode((500, 500))
     
-    test = button(50, 50)
-    
-    
+    test = button(100, 50, color.WHITE, 10)
+    test.text(font.H3, color.RED, "button")
+    test.border(10, borderRadius=10)
+    def hello(test):
+        print(test)
     
     while True:
         display.fill(color.GREEN)
-        print(test.place(display, (100, 100)))
+        events = pygame.event.get()
+        test.place(display, events, (100, 100))
+        
+        test.onClick(hello, True)
+        # print(test.onHold(holdAfterMouseLeave=True))
         
         
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 exit()
     
