@@ -1,4 +1,6 @@
+from typing import overload
 import pygame, random, os, pygame_textinput
+
 
 
 
@@ -8,11 +10,16 @@ import pygame, random, os, pygame_textinput
 
 class button:
     """
-    make easy buttons in pygame
+    make easy buttons in pygame\n
     standard buttons come with a gray color, specifiy the width and height
-    with ```buttonName.place(pygameDisplay, (Xposition, Yposition))```
-    add borders and centerd text to your button to truly customise the button
-    
+    with ```buttonName.place(pygameDisplay, pygame.eventhandeler, (Xposition, Yposition))```\n
+    add borders and centerd text to your button to truly customise the button\n\n
+    >>> buttonExample = button(100, 50, (255, 255, 255)) # width, height, color, optional radius, optional border thickness
+    >>> buttonExample.place(display, events, (100, 200)) # pygame display, pygame eventhandeler, x and y position
+    >>> buttonExample.border(10, (0, 0, 0)) # width of border, border color, optional border radius (customizable per corner)
+    >>> buttonExample.onClick(function) # important that the function doesn't containt its brackets, optional action activated after mousebutton is released
+    >>> isButtonActive = buttonExample.onHold() # optional action when active (same note as .onClick), optional 
+    >>> buttonExample.text(mediumFont, (255, 0, 0), "this is a button") # pygame font, text color, text
     
     """
     def __init__(self, width: float, height: float, color: tuple[int,int,int] = (120,120,120), radius: int = -1, borderThickness: int = -1):
@@ -68,7 +75,7 @@ class button:
         self.radiusBL = radiusBottomLeft
         self.radiusBR = radiusBottomRight
     
-    def reposition(self, width: float, height: float, radius: int = -1):
+    def resize(self, width: float, height: float, radius: int = -1):
         self._width = width
         self._height = height
         self._radius = radius
@@ -98,13 +105,21 @@ class button:
                     
         else:
             raise SyntaxError("place the '.place' methode before any '.on~' methods")
-        
-    def onMouseOver(self, action):
+    
+    def onMouseOver(self):
         if self.mouseInButton:
-            action()
+            return True
+        return False
+    
+    def changeColorOnHover(self, oldColor: tuple[int,int,int], newColor: tuple[int,int,int], transition: int = 0):
+        """
+        makes the button color `newColor` if mouse is in the button and makes the button color `oldColor` when not in mouse button
+        """
+        if self.onMouseOver():
+            pass
             
     
-    def onHold(self, action = None, holdAfterMouseLeave: bool = False):
+    def onHold(self, action = None, holdAfterMouseLeave: bool = False): # TODO fix 
         if self.mouseInButton and self.mouseButtonDown and self.clickedNotInButton == False:
             self.buttonClicked = True
             if action != None:
@@ -118,24 +133,33 @@ class button:
                 self.buttonClicked = False
         if self.mouseButtonUp:
             self.buttonClicked = False
-            
-                
+        
+        if self.mouseButtonDown and self.mouseInButton == False:
+            self.clickedNotInButton = True
+        
+                    
         return self.buttonClicked
-            
+        
     
-    def onClick(self, action,  actionOnRelease: bool = False): # TODO
+    def onClick(self, function, *argumets,  actionOnRelease: bool = False): # TODO
+        
+                
         if self.mouseButtonDown and not actionOnRelease: 
             if self.mouseInButton and self.highFlankDetection and self.clickedNotInButton == False:
-                action(True)
+                function(*argumets)
                 self.highFlankDetection = False
+                return True
 
         if self.mouseButtonUp and actionOnRelease and self.clickedNotInButton == False:
             if self.mouseInButton and self.lowFlankDetection and self.releasedNotInButton == False:
-                action(False)
+                function(*argumets)
                 self.lowFlankDetection = False
-        
-        
-        
+                return True
+        return False
+    
+   
+   
+    
         # for event in events:
         #     if event.type == pygame.MOUSEBUTTONDOWN:
         #         if self.mouseInButton == False:
@@ -240,16 +264,18 @@ if __name__ == "__main__":
     test = button(100, 50, color.WHITE, 10)
     test.text(font.H3, color.RED, "button")
     test.border(10, borderRadius=10)
-    def hello(test):
-        print(test)
+    def func():
+        print("ture")
     
     while True:
         display.fill(color.GREEN)
         events = pygame.event.get()
         test.place(display, events, (100, 100))
         
-        test.onClick(hello, True)
-        # print(test.onHold(holdAfterMouseLeave=True))
+        test.onClick(func)
+        # test.onHold()
+        test.recolor(color.BLUE) if test.onMouseOver() else test.recolor(color.WHITE)
+            
         
         
         for event in events:
