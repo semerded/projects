@@ -111,19 +111,27 @@ class button:
             return True
         return False
     
-    def changeColorOnHover(self, oldColor: tuple[int,int,int], newColor: tuple[int,int,int], transition: int = 0):
+    def changeColorOnHover(self, oldColor: tuple[int,int,int], newColor: tuple[int,int,int], changeTextColor: bool = False, transition: int = 0):
         """
         makes the button color `newColor` if mouse is in the button and makes the button color `oldColor` when not in mouse button
         """
         if self.onMouseOver():
-            pass
+            if changeTextColor:
+                self.textColor = newColor
+            else:
+                self.buttonColor = newColor
+        else:
+            if changeTextColor:
+                self.textColor = oldColor
+            else:
+                self.buttonColor = oldColor
             
     
-    def onHold(self, action = None, holdAfterMouseLeave: bool = False): # TODO fix 
+    def onHold(self, function = None, *arguments, holdAfterMouseLeave: bool = False): # TODO fix 
         if self.mouseInButton and self.mouseButtonDown and self.clickedNotInButton == False:
             self.buttonClicked = True
-            if action != None:
-                action()
+            if function != None:
+                function(*arguments)
         else:
             self.buttonClicked = False
         if holdAfterMouseLeave:
@@ -141,48 +149,46 @@ class button:
         return self.buttonClicked
         
     
-    def onClick(self, function, *argumets,  actionOnRelease: bool = False): # TODO
+    def onClick(self, function = None, *argumets,  actionOnRelease: bool = False): # TODO
+        """
+        use this to only activate when you clicked the button
         
-                
+        
+        
+        
+        \nexample 1:
+            >>> if buttonExample.onClick() == True:
+            >>>     print("hello world!")
+            === when clicked prints: "hello world!"
+        
+        \nexample 2:
+            >>> def myCalculator(number1, number2):
+            >>>     return number1 + number2
+            >>> calculation = buttonExample.onClick(myCalculator, 5, 7)
+            >>> print(calculation)
+            === when clicked prints: 12
+            
+        \nexample 3:
+            >>> def hello():
+            >>>     print("hello world!")
+            >>> buttonExample.onClick(hello, actionOnRelease=True)
+            === when released prints: "hello world!
+        """
+            
         if self.mouseButtonDown and not actionOnRelease: 
             if self.mouseInButton and self.highFlankDetection and self.clickedNotInButton == False:
-                function(*argumets)
+                returnValue = function(*argumets)
                 self.highFlankDetection = False
-                return True
+                return returnValue if returnValue != None else True
+
 
         if self.mouseButtonUp and actionOnRelease and self.clickedNotInButton == False:
             if self.mouseInButton and self.lowFlankDetection and self.releasedNotInButton == False:
-                function(*argumets)
+                returnValue = function(*argumets)
                 self.lowFlankDetection = False
-                return True
+                return returnValue if returnValue != None else True
         return False
     
-   
-   
-    
-        # for event in events:
-        #     if event.type == pygame.MOUSEBUTTONDOWN:
-        #         if self.mouseInButton == False:
-        #             self.mouseButtonDown = True
-        #             self.clickedNotInButton = True
-        #         else:
-        #             self.mouseButtonDown = True
-        #             self.clickedNotInButton = False
-        #     if event.type == pygame.MOUSEBUTTONUP:
-        #         self.clickedNotInButton = False
-        #         self.mouseButtonDown = False
-                
-        # if self.mouseInButton and self.mouseButtonDown and not self.clickedNotInButton and not actionOnRelease:
-        #     self.buttonClicked = True
-        #     action()
-            
-        # if self.mouseButtonDown == False or self.mouseInButton == False:
-        #     self.buttonClicked = False
-        
-        # if self.mouseButtonDown and self.mouseInButton == False:
-        #     self.clickedNotInButton = True
-            
-        # return self.buttonClicked
         
     def place(self, display, events, position: tuple[float, float]):
         self.events = events
@@ -213,12 +219,89 @@ class button:
         self.mouseInButton = False
         return False
     
-class text():
+class text:
     def __init__(self, inputText: str):
         self.inputText = inputText
         
+    def placeText(self, position: tuple[float, float]):
+        pass
     
-            
+    class textbox:
+        def __init__(self, width) -> None:
+            pass
+ 
+ 
+"""
+built in shortcuts
+
+this library comes with some presets to make some developing easier
+"""       
+class Xbutton:
+    def __init__(self, display, actionOnClick = exit, defaultColor: tuple[int,int,int] = (120, 120, 120), size: float = 30, position: tuple[int,int] = (0,0)) -> None:
+        self._quitButton = button(size, size, defaultColor, 5)
+        self.display = display
+        self.defaultColor = defaultColor
+        self.size = size
+        self.xcord = position[0]
+        self.ycord = position[1]
+        self.actionOnClick = actionOnClick
+    def __getCrossColor__(self):
+        colorTotal = 0
+        for color in self.defaultColor:
+            colorTotal += color
+        crossColor = (0,0,0) if colorTotal > 380 else (255, 255, 255)
+        return crossColor
+    
+    
+    def place(self, events, screenwidth: float):
+        
+        self.xcord = screenwidth - self.size
+        crossColor = self.__getCrossColor__()
+        self._quitButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 30), crossColor, "X")
+        self._quitButton.place(self.display, events, (self.xcord, self.ycord))
+        self._quitButton.recolor = (255, 0, 0) if self._quitButton.onMouseOver() else (0,0,0)
+        self._quitButton.changeColorOnHover(self.defaultColor, (255, 0, 0))
+        if crossColor == (0,0,0):
+            self._quitButton.changeColorOnHover((0,0,0), (255,255,255),True)
+            print(True)
+        
+        self._quitButton.onClick(self.actionOnClick)
+        
+    def repostion(self, xcord, ycord):
+        self.xcord = xcord
+        self.ycord = ycord
+        
+class menuKeys:
+    def __init__(self, display, menuColor: tuple[int,int,int] = (120, 120, 120), size: float = 30) -> None:
+        self.exitButton = Xbutton(display, exit, menuColor, size)
+        self.textColor = self.exitButton.__getCrossColor__()
+        self.maximizeButton = button(size, size, menuColor)
+        self.maximizeButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 30), self.textColor, "+")
+        self.minimizeButton = button(size, size, menuColor)
+        self.minimizeButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 30), self.textColor, "-")
+        
+        self.display = display
+        self.menuColor = menuColor
+        self.size = size
+        
+    def menuPlace(self, events, screenwidth: float):
+        self.exitButton.place(events, screenwidth)
+        
+        self.minimizeButton.place(self.display, events, (screenwidth - self.size * 3, 0))
+        self.minimizeButton.changeColorOnHover(self.menuColor, (0,255,0))
+        self.minimizeButton.onClick(pygame.display.iconify)
+        
+        self.maximizeButton.place(self.display, events, (screenwidth - self.size * 2, 0))
+        self.maximizeButton.changeColorOnHover(self.menuColor, (255, 255, 0))
+        # self.maximizeButton.onClick()
+        
+def windowInfo():
+    info = pygame.display.Info()
+    screenWidth, screenHeight = info.current_w, info.current_h
+    return screenWidth, screenHeight
+        
+def windowSize(width, heigth, resizable):
+    pass
 class color:
     RED = (255,0,0)
     ORANGE = (255,80,0)
@@ -255,27 +338,36 @@ class font:
     FONT100 = pygame.font.SysFont(pygame.font.get_default_font(), 100)
     FONT150 = pygame.font.SysFont(pygame.font.get_default_font(), 150)
 
+
     
 if __name__ == "__main__":
     pygame.init()
     
     display = pygame.display.set_mode((500, 500))
-    
+    clock = pygame.time.Clock()
     test = button(100, 50, color.WHITE, 10)
     test.text(font.H3, color.RED, "button")
     test.border(10, borderRadius=10)
+    
     def func():
-        print("ture")
+        print("hello")
+    # quitbutton = Xbutton(display, func, color.WHITE)
+    menukeys = menuKeys(display)
+   
     
     while True:
+        clock.tick(30)
         display.fill(color.GREEN)
         events = pygame.event.get()
         test.place(display, events, (100, 100))
         
-        test.onClick(func)
+        # print(test.onClick(func))
         # test.onHold()
-        test.recolor(color.BLUE) if test.onMouseOver() else test.recolor(color.WHITE)
-            
+        test.changeColorOnHover(color.WHITE, color.BLUE)
+        # test.recolor(color.BLUE) if test.onMouseOver() else test.recolor(color.WHITE)
+        # quitbutton.place(events, 500)
+        menukeys.menuPlace(events, 500)
+        
         
         
         for event in events:
