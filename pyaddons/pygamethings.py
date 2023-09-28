@@ -1,11 +1,17 @@
-from typing import overload
-import pygame, random, os, pygame_textinput
+import random, os
+try:
+    import pygame
+except ModuleNotFoundError:
+    raise ModuleNotFoundError("install pygame with 'pip install pygame'")
+try:
+    import pygame_textinput
+except ModuleNotFoundError:
+    raise ModuleNotFoundError("install pygame_textinput with 'pip install pygame_textinput'")
+try:
+    import screeninfo
+except ModuleNotFoundError:
+    raise ModuleNotFoundError("\ninstall screeninfo with 'pip install screeninfo'")
 
-
-
-
-
-    
 
 
 class button:
@@ -177,14 +183,19 @@ class button:
             
         if self.mouseButtonDown and not actionOnRelease: 
             if self.mouseInButton and self.highFlankDetection and self.clickedNotInButton == False:
-                returnValue = function(*argumets)
+                if function != None:
+                    returnValue = function(*argumets)
+                else: returnValue = None
                 self.highFlankDetection = False
                 return returnValue if returnValue != None else True
 
 
         if self.mouseButtonUp and actionOnRelease and self.clickedNotInButton == False:
             if self.mouseInButton and self.lowFlankDetection and self.releasedNotInButton == False:
-                returnValue = function(*argumets)
+                if function != None:
+                    returnValue = function(*argumets)
+                else: returnValue = None
+
                 self.lowFlankDetection = False
                 return returnValue if returnValue != None else True
         return False
@@ -264,7 +275,6 @@ class Xbutton:
         self._quitButton.changeColorOnHover(self.defaultColor, (255, 0, 0))
         if crossColor == (0,0,0):
             self._quitButton.changeColorOnHover((0,0,0), (255,255,255),True)
-            print(True)
         
         self._quitButton.onClick(self.actionOnClick, actionOnRelease=self.actionOnRelease)
         
@@ -281,9 +291,12 @@ class menuKeys:
         self.minimizeButton = button(size, size, menuColor, 0)
         self.minimizeButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 40), self.textColor, "~")
         
+        self.mouseButtonDown = False
         self.display = display
         self.menuColor = menuColor
         self.size = size
+        self.displayInfo = screeninfo.get_monitors()
+        self.displayInfo = [self.displayInfo[0].width, self.displayInfo[0].height]
         
     def menuPlace(self, events, screenwidth: float, screenheight: float):
         self.exitButton.place(events, screenwidth)
@@ -294,23 +307,67 @@ class menuKeys:
         
         self.maximizeButton.place(self.display, events, (screenwidth - self.size * 2, 0))
         self.maximizeButton.changeColorOnHover(self.menuColor, (255, 255, 0))
+        self.__resize__(events)
         if self.maximizeButton.onClick():
             displayScreenW, displayScreenH = windowInfo()
+            
             if screenwidth == displayScreenW and screenheight == displayScreenH:
                 self.oldScreenSize = [screenwidth, screenheight]
-                windowSize(displayScreenW, displayScreenH)
+                return pygame.display.set_mode((self.displayInfo[0], self.displayInfo[1]), pygame.FULLSCREEN)
             else:
-                windowSize(self.oldScreenSize[0], self.oldScreenSize[1])
-            
+                return pygame.display.set_mode((self.oldScreenSize[0], self.oldScreenSize[1]), pygame.RESIZABLE | pygame.NOFRAME)
+        return self.display
+    
+    def __resize__(self, events):
+        
+        mousePos = pygame.mouse.get_pos()
+        screenWidth, screenHeight = windowInfo()
+        if mousePos[0] <= 2 and mousePos[0] > 0 or mousePos[0] >= screenWidth - 3:
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseButtonDown = True
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.mouseButtonDown = False
+            if self.mouseButtonDown:
+                    return pygame.display.set_mode((abs(mousePos[0]), screenHeight), pygame.RESIZABLE | pygame.NOFRAME)
+        if mousePos[1] <= 2 or mousePos[1] >= screenHeight - 3:
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseButtonDown = True
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.mouseButtonDown = False
+                    
+            if self.mouseButtonDown:
+                    return pygame.display.set_mode((screenWidth, abs(mousePos[1])), pygame.RESIZABLE | pygame.NOFRAME)
+
+               
+      
+             
         
 def windowInfo():
     info = pygame.display.Info()
     screenWidth, screenHeight = info.current_w, info.current_h
     return screenWidth, screenHeight
         
-def windowSize(width, heigth, resizable: bool = False):
-    display = pygame.display.set_mode((width, heigth))
-    return display
+def easyButton(xpositie: int, ypositie: int, lengte: int, hoogte: int, textFont, text: str = "", textColor: tuple[int, int, int] = (255, 255, 255), kleurvierkant: tuple[int, int, int] = (0, 0, 0), rand: int = 0, afvlakking: int = -1):
+    global mouse_pos
+
+    printText = textFont.render(text, True, textColor)
+    if lengte <= 0 or hoogte <= 0:
+        rect = pygame.draw.rect(display, kleurvierkant, pygame.Rect(
+                xpositie - 5, ypositie - 5, printText.get_width() + 10, printText.get_height() + 10), rand, afvlakking)
+        display.blit(printText, (xpositie, ypositie))
+    else:
+        rect = pygame.draw.rect(display, kleurvierkant, pygame.Rect(
+                xpositie, ypositie, lengte, hoogte), rand, afvlakking)
+        display.blit(printText, (xpositie + lengte / 2 - printText.get_width() / 2, ypositie + hoogte / 2 - printText.get_height() / 2))
+    
+    
+    mouse_pos = pygame.mouse.get_pos()
+    if rect.collidepoint(mouse_pos):
+        return True
+    return False
+
 class color:
     RED = (255,0,0)
     ORANGE = (255,80,0)
@@ -350,9 +407,11 @@ class font:
 
     
 if __name__ == "__main__":
+    os.environ['SDL_VIDEO_CENTERED'] = "1"
+
     pygame.init()
     
-    display = pygame.display.set_mode((500, 500))
+    display = pygame.display.set_mode((500, 500), pygame.RESIZABLE | pygame.NOFRAME)
     clock = pygame.time.Clock()
     test = button(100, 50, color.WHITE, 10)
     test.text(font.H3, color.RED, "button")
@@ -362,7 +421,7 @@ if __name__ == "__main__":
         print("hello")
     # quitbutton = Xbutton(display, func, color.WHITE)
     menukeys = menuKeys(display)
-   
+    # print(windowInfo())
     
     while True:
         clock.tick(30)
@@ -375,9 +434,9 @@ if __name__ == "__main__":
         test.changeColorOnHover(color.WHITE, color.BLUE)
         # test.recolor(color.BLUE) if test.onMouseOver() else test.recolor(color.WHITE)
         # quitbutton.place(events, 500)
-        menukeys.menuPlace(events, 500, 500)
+        display = menukeys.menuPlace(events, 500, 500)
         
-        
+        # print(pygame.mouse.get_pos())
         
         for event in events:
             if event.type == pygame.QUIT:
