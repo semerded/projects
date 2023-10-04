@@ -25,5 +25,3 @@ def intput(message: str ="", errorMessage: str = "input was not an int", repeatU
                 return
             continue
         return int(prompt)
-
-print(intput("give a number: ", False))
