@@ -32,6 +32,16 @@
             "name": "read from json",
             "description": "reads the dict from the json file with the provided path",
             "function": "import json, os\nif os.path.isfile(JsonFilePath) is False:\n    raise Exception(\"File not found\")\nwith open(JsonFilePath) as filepath:\n    savefile = json.load(filepath)"
+        },
+        {
+            "name": "check if var is a number",
+            "description": "gives true if a number else false and gives an error message",
+            "function": "def isNumber(input, errorMessage: str = \"\"):\n    try:\n        int(input)\n        float(input)\n    except ValueError:\n        return False\n    return True"
+        },
+        {
+            "name": "average / gemiddelde",
+            "description": "geeft het gemiddelde van de nummers in een lijst terug",
+            "function": "def average(list: list):\n    for element in list:\n        if not isNumber(element):\n            raise ValueError(\"non number in list\")\n    listLength = len(list)\n    return sum(list) / listLength"
         }
     ],
     "html": []

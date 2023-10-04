@@ -320,7 +320,11 @@ class textbox:
             textSurface = self.font.render(f"{line}", True, color)
             self.display.blit(textSurface, (self._position[0], self._position[1] + (linecounter * self.textHeight)))
             linecounter += 1
-
+    
+    @property
+    def boxheight(self):
+        return self.textHeight
+        
         
  
 """
@@ -329,15 +333,22 @@ built in shortcuts
 this library comes with some presets to make some developing easier
 """       
 class Xbutton:
-    def __init__(self, display, actionOnClick = exit, defaultColor: tuple[int,int,int] = (120, 120, 120), size: float = 30, position: tuple[int,int] = (0,0), radius: int = 5, actionOnRelease: bool = False) -> None:
+    def __init__(self, display, actionOnClick = exit, defaultColor: tuple[int,int,int] = (120, 120, 120), size: float = 30, position: tuple[int,int] = (0,0), radius: int = 5, actionOnRelease: bool = True) -> None:
         self._quitButton = button(size, size, defaultColor, radius)
         self.display = display
         self.defaultColor = defaultColor
         self.size = size
         self.xcord = position[0]
+        if self.xcord != 0:
+            self.repostioned = True
+        else:
+            self.repostioned = False
+
+
         self.ycord = position[1]
         self.actionOnClick = actionOnClick
         self.actionOnRelease = actionOnRelease
+
     def __getCrossColor__(self):
         colorTotal = 0
         for color in self.defaultColor:
@@ -347,10 +358,10 @@ class Xbutton:
     
     
     def place(self, events, screenwidth: float):
-        
-        self.xcord = screenwidth - self.size
+        if self.repostioned == False:
+            self.xcord = screenwidth - self.size
         crossColor = self.__getCrossColor__()
-        self._quitButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 40), crossColor, "x")
+        self._quitButton.text(pygame.font.SysFont(pygame.font.get_default_font(), self.size + 10), crossColor, "x")
         self._quitButton.place(self.display, events, (self.xcord, self.ycord))
         self._quitButton.recolor = (255, 0, 0) if self._quitButton.onMouseOver() else (0,0,0)
         self._quitButton.changeColorOnHover(self.defaultColor, (255, 0, 0))
@@ -362,6 +373,7 @@ class Xbutton:
     def repostion(self, xcord, ycord):
         self.xcord = xcord
         self.ycord = ycord
+        self.repostioned = True
 
 """in progress"""
 class menuKeys:
@@ -478,6 +490,7 @@ class color:
     ORANGE = (255,80,0)
     YELLOW = (255,255,0)
     GREEN = (0,255,0)
+    DARKGREEN = (0,150,0)
     TURQUISE = (0,255,255)
     PINK = (255, 0, 100)
     BLUE = (0,0,255)
