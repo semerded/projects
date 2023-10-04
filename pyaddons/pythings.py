@@ -1,4 +1,4 @@
-def isNumber(input, errorMessage: str = ""):
+def isNumber(input, errorMessage: str = "") -> bool:
     try:
         int(input)
         float(input)
@@ -14,5 +14,13 @@ def average(list: list):
     listLength = len(list)
     return sum(list) / listLength
 
+def intput(message: str =""):
+    while True:
+        prompt = input(message)
+        try:
+            int(prompt)
+        except ValueError:
+            print("input was not an int")
+            continue
+        return int(prompt)
 
-    
