@@ -450,10 +450,10 @@ def windowInfo():
 def windowMinSize(display, minWidth, minHeight, *flags):
     screenWidth, screenHeight = windowInfo()
     if screenWidth < minWidth:
-        return pygame.display.set_mode((minWidth, screenHeight), *flags)
+        return pygame.display.set_mode((minWidth, screenHeight), *flags), True
     if screenHeight < minHeight:
-        return pygame.display.set_mode((screenWidth, minHeight), *flags)
-    return display
+        return pygame.display.set_mode((screenWidth, minHeight), *flags), True
+    return display, False
         
 def simpleButton(display, xposition: int, yposition: int, width: int, height: int, textFont, text: str = "", textColor: tuple[int, int, int] = (255, 255, 255), buttonColor: tuple[int, int, int] = (0, 0, 0), radius: int = -1, border: int = 0):
     printText = textFont.render(text, True, textColor)
