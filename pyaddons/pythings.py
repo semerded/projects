@@ -14,13 +14,16 @@ def average(list: list):
     listLength = len(list)
     return sum(list) / listLength
 
-def intput(message: str =""):
+def intput(message: str ="", errorMessage: str = "input was not an int", repeatUntilInt: bool = True):
     while True:
         prompt = input(message)
         try:
             int(prompt)
         except ValueError:
-            print("input was not an int")
+            print(errorMessage)
+            if not repeatUntilInt:
+                return
             continue
         return int(prompt)
 
+print(intput("give a number: ", False))
