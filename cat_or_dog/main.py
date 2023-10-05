@@ -38,10 +38,11 @@ def updateCalls(dog: bool, cat: bool): # update de lijst van apicalls
                 json.dump(savefile, json_file, indent = 4, separators=(',',': '))
 
 class get: # hierin wordt de api opgeroepen en de data verwerkt
-    def __init__(self, breedID :str = "", selection: str = "", amount: int = 0) -> None:
+    def __init__(self, breedID :str = "", selection: str = "", category: str = "", amount: int = 0) -> None:
         self.__breedID = breedID
         self.__selection = selection
         self.__amount = amount
+        self.__category = category
     
     def getInfo(self): # krijg de info van het geselecteerde ras
         BreedURL = f"https://api.the{self.__selection}api.com/v1/breeds/{self.__breedID}"
@@ -49,23 +50,39 @@ class get: # hierin wordt de api opgeroepen en de data verwerkt
         return self.__breedInfo
     
     def getImages(self): # krijg foto's van het geselecteerde ras
-        apikey = self.____getAPIkey__()
-        BreedImageURL = f"https://api.the{self.__selection}api.com/v1/images/search?limit={self.__amount}&breed_ids={self.__breedID}&api_key={apikey}"
+        
+        # klaarmaken van url
+        apikey = self.__getAPIkey__()
+        BreedImageURL = f"https://api.the{self.__selection}api.com/v1/images/search?limit={self.__amount}&api_key={apikey}"
+        if self.__category == "info":
+            BreedImageURL += f"&breed_ids={self.__breedID}"
+            
+        # api oproepen
         self.__breedImage = requests.get(BreedImageURL).json()
-        return self.__breedImage
+        self.__imageList = []
+        self.__originalImageSurface = []
+        
+        # elke foto omzetten naar leesbare data voor pygame
+        for image in range(len(self.__breedImage)):
+            req = Request(
+                        url=self.__breedImage[image]["url"], 
+                        headers={'User-Agent': 'Mozilla/5.0'})
+            imageString = urlopen(req).read()
+            imageFile = BytesIO(imageString)
+            pyimage = pygame.image.load(imageFile)
+            originalSurface = pyimage
+            self.__imageSize = screenHeight / 2
+            try:
+                pyimage = pygame.transform.smoothscale(pyimage, (self.__imageSize, self.__imageSize)) # de afbeelding wordt automatisch geschaald
+            except ValueError:
+                continue
+            
+            self.__originalImageSurface.append(originalSurface)
+            self.__imageList.append(pyimage)
+        return self.__imageList # geef de lijst met data terug
     
-    def showImage(self, imageNumber):
-        req = Request(
-            url=self.__breedImage[imageNumber]["url"], 
-            headers={'User-Agent': 'Mozilla/5.0'})
-        imageString = urlopen(req).read()
-        imageFile = BytesIO(imageString)
-        pyimage = pygame.image.load(imageFile)
-        self.___imageSize = screenHeight / 2
-        pyimage = pygame.transform.smoothscale(pyimage, (self.___imageSize, self.___imageSize))
-        return pyimage
     
-    def __getAPIkey__(self): # 
+    def __getAPIkey__(self): # maak de api key klaar
         if self.__selection == "cat":
             updateCalls(False, True)
             return CATAPIKEY
@@ -74,18 +91,15 @@ class get: # hierin wordt de api opgeroepen en de data verwerkt
             return DOGAPIKEY
         else:
             raise ValueError("selection was not a cat or dog")
+        
     @property
-    def imageAmount(self):
-        return len(self.__breedImage)
+    def imageAmount(self): # geeft het aantal foto's terug
+        return len(self.__imageList)
     
     @property
-    def imageSize(self):
-        return self.___imageSize
+    def imageSize(self): # geeft de grote de afbeeldingen terug
+        return self.__imageSize
         
-        
-        
-    def getRandomImage(self):
-        pass
     
     def getGameImage(self):
         pass
@@ -151,7 +165,6 @@ class app:
         self.__choseDog.text(font.H2, color.BLACK, "DOG")
         self.__choseCat.text(font.H2, color.BLACK, "CAT")
         
-        self.__infoActive = False
         
         # scroll sidebar
         self.__hoverBreed = ""
@@ -166,6 +179,9 @@ class app:
         self.__loadingText = text(display, font.customFont(200), (0,0))
 
 
+        self.__imagesActive = False
+        self.__infoActive = False
+        
 
     def header(self):
         pygame.draw.rect(display, color.GREEN, pygame.Rect(0, 0, screenWidth, 50))
@@ -174,23 +190,28 @@ class app:
         self.__infoButton.text(font.H2, color.BLACK, f"{self.__selection} info")
         self.__infoButton.place(display, events, (screenWidth / 2 - 190, 5))
         self.__infoButton.changeColorOnHover(buttonColor, color.LIGHTBLUE)
+        
         if self.__infoButton.onClick():
             self.__category = "info"
             self.__sidebarWidth = 270
+            
         
         buttonColor = color.TURQUISE if self.__category == "images" else color.BLUE
         self.__imageButton.text(font.H2, color.BLACK, f"{self.__selection} images")
         self.__imageButton.place(display, events, (screenWidth / 2 - 60, 5))
         self.__imageButton.changeColorOnHover(buttonColor, color.LIGHTBLUE)
+        
         if self.__imageButton.onClick():
             self.__category = "images"
             self.__sidebarWidth = 0
             self.__infoActive = False
         
+        
         buttonColor = color.TURQUISE if self.__category == "game" else color.BLUE
         self.__gameButton.text(font.H2, color.BLACK, "game")
         self.__gameButton.place(display, events, (screenWidth / 2 + 70, 5))
         self.__gameButton.changeColorOnHover(buttonColor, color.LIGHTBLUE)
+        
         if self.__gameButton.onClick():
             self.__category = "game"
             self.__sidebarWidth = 0
@@ -198,9 +219,7 @@ class app:
         
         self.__quitButton.repostion(screenWidth - 50, 5)
         self.__quitButton.place(events, screenWidth)
-
-
-    def sidebar(self):
+        
         self.__choseDog.place(display, events, (10, 5))
         self.__choseDog.changeColorOnHover(color.ORANGE, color.RED)
         if self.__choseDog.onClick():
@@ -222,9 +241,13 @@ class app:
             self.__hoverBreed = ""
             self.__chosenBreed = ""
 
+
+   
+        
+
             
 
-    def scrollsidebar(self):
+    def sidebar(self):
         if self.__category == "info":
             global scrollType
             if rectDetection(display, 0, 50, self.__sidebarWidth, screenHeight - 50, color.GREY):
@@ -251,7 +274,7 @@ class app:
         if rectDetection(display, self.__sidebarWidth, 50, screenWidth - self.__sidebarWidth, screenHeight - 50, color.WHITE):
             scrollType = 1
         if self.__chosenBreed == "" and self.__category == "info":
-            self.__choseBreedText.centerdText((self.__sidebarWidth, screenWidth, 50, screenHeight))
+            self.__choseBreedText.centerd(self.__sidebarWidth, screenWidth, 50, screenHeight)
             self.__choseBreedText.place(color.BLACK, f"choose a {self.__selection}")
         else:
             self.__searchButton.resize(screenWidth - (self.__sidebarWidth + 10), 50, 5)
@@ -259,50 +282,54 @@ class app:
             self.__searchButton.changeColorOnHover(color.GREY, color.LESSWHITE)
             self.__searchButton.place(display, events, (self.__sidebarWidth + 5, 55))
             if self.__searchButton.onClick():
-                self.__loadingText.centerdText((self.__sidebarWidth, screenWidth, 50, screenHeight))
+                self.__loadingText.centerd(self.__sidebarWidth, screenWidth, 50, screenHeight)
                 self.__loadingText.place(color.random(), "loading...")
                 pygame.display.flip() # bij het ophalen van de info blijft het scherm tijdelijk hangen
                 # zolang hij dus aan het laden is zal de text op het scherm blijven staan
                 
                 self.__imageSurfaces = []
-                self.__breedID = self.__breeds["breeds"][self.__chosenBreed]
-                infoTab = get(self.__breedID, self.__selection, savefile["maxInfoPictures"]) # om het laden makkelijker te maken limiteer ik de foto's tot 5
-                print(self.__breedID, self.__selection)
                 
-                self.__breedInfo = infoTab.getInfo()
-                infoTab.getImages()
-                print(infoTab.imageAmount)
-                
-                for image in range(infoTab.imageAmount):
-                    self.__imageSurfaces.append(infoTab.showImage(image))
-                print(self.__imageSurfaces)
-                self.__imageBackButton = button(infoTab.imageSize / 2 - 3, 50, color.RED, 5)
-                self.__imageForwardButton = button(infoTab.imageSize / 2 - 3, 50, color.GREEN, 5)
-                imageSize = infoTab.imageSize
-                self.__imageAmount = infoTab.imageAmount
-                self.__infoActive = True
-                self.__imageCounter = 0
-                
-                # text voor onder de foto
-                self.__name = text(display, font.FONT50, (0,0))
-                self.__origin = text(display, font.H1, (0,0))
-                self.__temperament = text(display, font.H3, (0,0))
-    
-    def updateImageSizes(self):
-        if screenHeight >= 700:
-            self.____updateImageSizes__(screenHeight)
-        else:
-            self.____updateImageSizes__(700)
-    
-    def __updateImageSizes__(self, screenHeight):
-        for index, image in enumerate(self.__imageSurfaces):
-            self.__imageSurfaces[index] = pygame.transform.smoothscale(image, (screenHeight / 2, screenHeight / 2))
-        self.__imageBackButton.resize(screenHeight / 4 - 3, 50, 5)
-        self.__imageForwardButton.resize(screenHeight / 4 - 3, 50, 5)  
+                if self.__category == "info":
+                    self.__breedID = self.__breeds["breeds"][self.__chosenBreed]
+                    infoTab = get(self.__breedID, self.__selection, self.__category, savefile["maxInfoPictures"]) # om het laden makkelijker te maken limiteer ik de foto's tot 5
 
-    def info(self):
-        # foto
+                    # roep de info op van de api's            
+                    self.__breedInfo = infoTab.getInfo()
+                    self.__imageSurfaces = infoTab.getImages()
+    
+                    # knoppen toevoegen
+                    self.__imageBackButton = button(infoTab.imageSize / 2 - 3, 50, color.RED, 5)
+                    self.__imageForwardButton = button(infoTab.imageSize / 2 - 3, 50, color.GREEN, 5)
+                    imageSize = infoTab.imageSize
+                    self.__imageAmount = infoTab.imageAmount
+                    self.__infoActive = True
+                    self.__imageCounter = 0
+                
+                    # text voor onder de foto
+                    self.__name = text(display, font.FONT50, (0,0))
+                    self.__origin = text(display, font.H1, (0,0))
+                    self.__temperament = textbox(display, font.H3, (0,0))
+                
+                if self.__category == "images":
+                    imageTab = get(selection=self.__selection, category=self.__category, amount=8)
+                    self.__imageSurfaces = imageTab.getImages()
+                    
+                    self.__imageAmount = imageTab.imageAmount
+                    self.__imagesActive = True
+                    self.updateImageSize()    
+     
+
+    def apiContent(self):
+        """
+        category info
+        
+        er wordt een kader met een foto getoond
+        hieronder komt de algemene info
+        hierlangs komt meer info
+        """
         if self.__infoActive:
+            
+            # foto
             self.__imageBackButton.text(font.H1, color.BLACK, "<")
             if self.__imageCounter > 0:
                 self.__imageBackButton.changeColorOnHover(color.GREEN, (0,200,0))
@@ -328,20 +355,70 @@ class app:
             display.blit(self.__imageSurfaces[self.__imageCounter], (280, 115))
         
             # onder foto
-            self.__name.centerdText((270, 270 + screenHeight / 2, screenHeight / 2 + 180, screenHeight / 2 + 200))
+            self.__name.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 180)
             self.__name.place(color.BLACK, self.__breedInfo["name"])
             
-            self.__origin.centerdText((270, 270 + screenHeight / 2, screenHeight / 2 + 210, screenHeight / 2 + 230))
+            self.__origin.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 220)
             self.__origin.place(color.DARKGRAY, self.__breedInfo["origin"])
             
-            self.__temperament.centerdText((270, 270 + screenHeight / 2, screenHeight / 2 + 230, screenHeight / 2 + 245))
-            self.__temperament.place(color.GRAY, self.__breedInfo["temperament"])
+            self.__temperament.reposition(275, screenHeight / 2 + 250)
+            self.__temperament.place(screenHeight / 2 - 10, color.GRAY, self.__breedInfo["temperament"], True)
+        
+        """
+        category images
+        
+        er worden 8* foto's getoond
+        
+            * alleen 24 en 32 bit foto's worden getoond, sommige doorgekregen foto's voldoen daar niet aan
+                Hierdoor worden er soms minder foto's getoond
+        """    
+        if self.__imagesActive:
+            for image in range(self.__imageAmount):
+                y = 110 if image < 4 else (screenHeight + 110) / 2
+                x = image * screenWidth / 4 + 3 if image < 4 else (image - 4) * screenWidth / 4 + 3
+                
+                imageRect = display.blit(self.__imageSurfaces[image], (x + 6, y + 3))
+                mousePos = pygame.mouse.get_pos()
+                if imageRect.collidepoint(mousePos) and action["mouseButtonClicked"]:
+                    print(image)
+
+            
+            
+    
+    """
+    om de foto's en knoppen de juiste schaal te houden worden ze bij elke verandering geresized
+    
+    """
+    def updateImageSize(self):
+        if self.__category == "info":
+            xy = 700 if screenHeight < 700 else screenHeight
+            self.__updateImageSizes__(xy / 2, xy / 2)
+            
+        if self.__category == "images":
+            x = 1400 if screenWidth < 1400 else screenWidth
+            y = 700 if screenHeight < 700 else screenHeight        
+            self.__updateImageSizes__((x - 110) / 4 - 6, (y - 110) / 2 - 6)
+        
+        if self.__category == "game":
+            pass
+        
+    
+    def __updateImageSizes__(self, xcord, ycord):
+        for index, image in enumerate(self.__imageSurfaces):
+            self.__imageSurfaces[index] = pygame.transform.smoothscale(image, (xcord, ycord))
+        if self.__category == "info" and self.__breedID != "":
+            self.__resizeImageButtons__()
+            
+    def __resizeImageButtons__(self):
+        self.__imageBackButton.resize(screenHeight / 4 - 3, 50, 5)
+        self.__imageForwardButton.resize(screenHeight / 4 - 3, 50, 5) 
         
     @property
     def breedHeight(self):
         return self.__breeds["height"]
+    
 
-APP = app() 
+APP = app() # maak app aan
 
 while True:
     clock.tick(60)
@@ -350,13 +427,20 @@ while True:
     events = pygame.event.get()
     screenWidth, screenHeight = windowInfo()
     
-    APP.scrollsidebar()
-    APP.header()
+    
     APP.sidebar()
+    APP.header()
     APP.body()
     
-    APP.info()
+    APP.apiContent()
+    
+    
+    
+    # categorie game
 
+    
+    # header en sidebar
+    
     
     if scrollCounter[0] < maxSidebarScroll:
         scrollCounter[0] = maxSidebarScroll
@@ -373,7 +457,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONUP:
             action["mouseButtonClicked"] = False
         if event.type == pygame.WINDOWRESIZED:
-            APP.updateImageSizes()    
+            APP.updateImageSize()    
 
 
     

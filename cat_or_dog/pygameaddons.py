@@ -118,7 +118,7 @@ class button:
         """
         makes the button color `newColor` if mouse is in the button and makes the button color `oldColor` when not in mouse button
         """
-        if self.__onMouseOver():
+        if self.onMouseOver():
             if changeTextColor:
                 self.__textColor = newColor
             else:
@@ -228,24 +228,38 @@ class button:
         return False
     
 class text:
-    def __init__(self, display, font, position: tuple[int,int]) -> None:
+    def __init__(self, display, font, position: tuple[float,float]) -> None:
         self.__display = display
         self.__font = font
         self.__position = position
         
         self.__border = False
         self.__background = False
-        self.__centerd = False
+        self.__xcenter = False
+        self.__ycenter = False
         self.__padding = 0
 
 
 
-    def centerdText(self, position: tuple[int,int,int,int]):
+    def centerd(self, xmin: float, xmax: float, ymin: float, ymax: float):
         """
-        position[topleft, topright, bottomleft, bottomright]
+        position[min width, max width, min height, max height]
         """
-        self.__position = position
-        self.__centerd = True
+        self.__position = [(xmin + xmax) / 2, (ymin + ymax) / 2]
+        self.__xcenter = True
+        self.__ycenter = True
+        
+    def centerdWidth(self, xmin: float, xmax: float, ycord: float):
+        self.__position = [(xmin + xmax) / 2, ycord]
+        self.__xcenter = True
+
+    
+    def centerdHeight(self, xcord: float, ymin: float, ymax: float):
+        self.__position = [xcord, (ymin + ymax) / 2]
+        self.__ycenter = True
+    
+    def reposition(self, xcord: float, ycord: float):
+        self.__position = [xcord, ycord]
         
     def border(self, color: tuple[int,int,int], borderWidth: int, borderRadius: int = -1):
         self.__surface = self.__textsurface.get_rect()
@@ -263,11 +277,10 @@ class text:
         
         self.__background = True
         
-    def reposition(self, position: tuple[int,int]):
-        self.__position = position
-        
     def place(self, color:tuple[int,int,int], text: str):
-        self.__textsurface = self.__font.render(f"{text}", True, color)
+        self.__textsurface = self.__font.render(f"{text}", True, color) 
+        
+        # padding
         if self.__padding > 0:
             padding = self.__padding / 2
         else:
@@ -278,19 +291,23 @@ class text:
         if self.__border:
             pygame.draw.rect(self.__display, self.__borderColor, pygame.Rect(self.__position[0] - self.__borderWidth / 2 - padding, self.__position[1] - self.__borderWidth / 2 - padding, self.__surface[2] + self.__borderWidth + self.__padding, self.__surface[3] + self.__borderWidth + self.__padding), self.__borderWidth, self.__borderRadius)
         
-        if self.__centerd:        
-            self.__display.blit(self.__textsurface, ((self.__position[0] + self.__position[1]) / 2 - self.__textsurface.get_width() / 2, (self.__position[2] + self.__position[3]) / 2 - self.__textsurface.get_height() / 2))
-        else:
-            self.__display.blit(self.__textsurface, (self.__position[0], self.__position[1]))
+        # place text
+        if self.__xcenter:  
+            self.__position[0] -= self.__textsurface.get_width() / 2
+            
+        if self.__ycenter:
+            self.__position[1] -= self.__textsurface.get_height() / 2      
+        
+        self.__display.blit(self.__textsurface, (self.__position[0], self.__position[1]))
 
         
 class textbox:
     def __init__(self, display, font, position: tuple[int,int]) -> None:
-        self.__display = display
-        self.__font = font
-        self.__position = position
         self.__calculatedWidth = -1
         self.__textBoxList = []
+        self.__position = position
+        self.__font = font
+        self.__text = text(display, font, position)
         
     def __calcbox__(self, width, text: str):
         text = text.split(" ")
@@ -309,13 +326,20 @@ class textbox:
         
         self.__calculatedWidth = width
     
-    def place(self, width, color: tuple[int,int,int], text: str):
+    def reposition(self, xcord, ycord):
+        self.__position= (xcord, ycord)
+    
+    def place(self, width, color: tuple[int,int,int], text: str, centerd: bool = False):
         if self.__calculatedWidth != width:
             self.__calcbox__(width, text)
         linecounter = 0
         for line in self.__textBoxList:
-            textSurface = self.__font.render(f"{line}", True, color)
-            self.__display.blit(textSurface, (self.__position[0], self.__position[1] + (linecounter * self.__textHeight)))
+            if centerd:
+                self.__text.centerdWidth(self.__position[0], self.__position[0] + width, self.__position[1] + (linecounter * self.__textHeight))
+            else:
+                self.__text.reposition(self.__position[0], self.__position[1] + (linecounter * self.__textHeight))
+            self.__text.place(color, line)
+
             linecounter += 1
     
     @property
@@ -569,7 +593,7 @@ if __name__ == "__main__":
         # test.recolor(color.BLUE) if test.onMouseOver() else test.recolor(color.WHITE)
         quitbutton.place(events, 500)
         
-        box.place(400, color.BLACK, "dit is een text waarmee ik gebruik maak van textboxes zoals html probeer ik dit zelf nu lol")
+        box.place(400, color.BLACK, "dit is een text waarmee ik gebruik maak van textboxes zoals html probeer ik dit zelf nu lol", True)
         # print(pygame.mouse.get_pos())
         
         for event in events:
