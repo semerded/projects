@@ -191,10 +191,21 @@ class app:
         
     def __getGameImages__(self): # TODO fix als er geen foto opgehaald wordt
         self.__imageSurfaces = []
-        dogImage, temp = self.__GameDogImage.getImages()
-        catImage, temp = self.__GameCatImage.getImages()
+        while True:
+            dogImage, temp = self.__GameDogImage.getImages()
+            if dogImage != []:
+                break
+        while True:
+            catImage, temp = self.__GameCatImage.getImages()
+            if catImage != []:
+                break
         self.__imageSurfaces.append(dogImage[0])
         self.__imageSurfaces.append(catImage[0])
+        
+    def __hpHandeler__(self, hpdifference):
+        self.__hp += hpdifference
+        if self.__hp <= 0:
+            ...
         
     def __getGameEvent__(self, animal):
         EVENTS = {
@@ -410,6 +421,8 @@ class app:
             self.__GamePetDogButton.text(font.H1, color.BLACK, "pet the dog")
             self.__GamePetCatButton = button(0,0, color.BLUE, radius=5)
             self.__GamePetCatButton.text(font.H1, color.BLACK, "pet the cat")
+            self.__GameDoNothingButton = button(0, 0, color.RED, radius=5)
+            self.__GameDoNothingButton.text(font.H1, color.BLACK, "do nothing")
             
             self.__GameText = text(display, font.FONT150, (0,0))
             
@@ -529,6 +542,16 @@ class app:
             self.__GamePetCatButton.place(display, events, (50, buttonYpos))
             if self.__GamePetCatButton.onClick():
                 self.__getGameEvent__("cat")
+                
+            # doe niets
+            self.__GameDoNothingButton.changeColorOnHover(color.RED, color.LESSRED)
+            self.__GameDoNothingButton.place(display, events, (screenWidth / 2 - (screenWidth / 2 - (50 + self.__imageSurfaces[0].get_width())) + 5, buttonYpos))
+            if self.__GameDoNothingButton.onClick():
+                self.__hpHandeler__(-random.randint(5, 10))
+                print(self.__hp)
+                self.__getGameImages__()
+                self.updateImageSize()
+                
             
             
     
@@ -561,6 +584,7 @@ class app:
         elif self.__category == "game"  and self.__gameActive:
             self.__GamePetDogButton.resize(self.__imageSurfaces[1].get_width(), 50, 5)
             self.__GamePetCatButton.resize(self.__imageSurfaces[0].get_width(), 50, 5)
+            self.__GameDoNothingButton.resize(screenWidth - self.__imageSurfaces[0].get_width() * 2 - 110, 50, 5)
             
         
         
