@@ -1,5 +1,4 @@
-from typing import Any
-import pygame, requests, json
+import pygame, requests, json, random
 from pygameaddons import *
 from os import path
 from io import BytesIO
@@ -185,15 +184,75 @@ class app:
         self.__imagesActive = False
         self.__infoActive = False
         self.__gameActive = False
+        
     
     def __closeBigImage__(self):
         self.__allImages = True
         
-    def __getGameImages__(self):
-        self.__imageSurfaces = [0,1]
-        self.__imageSurfaces[0], temp = self.__GameDogImage.getImages()
-        self.__imageSurfaces[0], temp = self.__GameCatImage.getImages()
-
+    def __getGameImages__(self): # TODO fix als er geen foto opgehaald wordt
+        self.__imageSurfaces = []
+        dogImage, temp = self.__GameDogImage.getImages()
+        catImage, temp = self.__GameCatImage.getImages()
+        self.__imageSurfaces.append(dogImage[0])
+        self.__imageSurfaces.append(catImage[0])
+        
+    def __getGameEvent__(self, animal):
+        EVENTS = {
+            "cat": {
+                "you've been scrached by the cat": -30, 
+                "the cat liked you but he didn't let you pet him": -5,
+                "the cat was scared and ran away": -10,
+                "the cat was angry and attacked you": -25, 
+                "you got a disease from the cat": -99,
+                "the cat liked you": 10,
+                "the cat loved you": 30,
+                "the cat wanted to be adopted": 99,
+                "the cat wanted to be pet": 20, 
+                "ultimate scratch attack": -50,
+                "the cat was possessed by satan": -66,
+                "the cat turned around twice": 2,
+                "the cat turned around once": 1,
+                "the cat pooped": -10,
+                "the cat did a cat thing": 3,
+                "the cat licked you": 20,
+                "the cat hissed": -3,
+                "paw to face": -20,
+                "meawwww": 4,
+                
+            },
+            "dog": {
+                "the dog wanted a pet": 15,
+                "the dog was a good boy": 5,
+                "nothing happend": 0,
+                "the dog was a bad boy": -5,
+                "the dog peed on your shoes": -10,
+                "the dog peed on your shoes but you liked it (weird)": 10,
+                "the dog shit on the floor": -15,
+                "the dog attacked": -25,
+                "the dog was a government spy": -40,
+                "the dog liked you": 10,
+                "the dog liked you a bit more": 15,
+                "the dog licked you": 20,
+                "the dog had rabies": -99,
+                "the dog killed you": -999,
+                "the dog bit your finger of": -35,
+                "the dog bit your leg of": -50,
+                "the dog bit you in your nutsack": -98,
+                "the dog licked your hand": 15,
+                "the dog did nothing": 0,
+                "the dog ran away": -5,
+                "the dog started humping your leg": -10,
+                "the dog barked": -3,
+                "the dog had dirty paws and made your white pants dirty": -13,
+                "bark bark": -5,
+                "arf arf (knocked loose refference)": 5,
+            }
+           
+        }
+        
+        
+        # hp handeler
+        
     def header(self):
         # header achtergrond
         pygame.draw.rect(display, color.GREEN, pygame.Rect(0, 0, screenWidth, 50))
@@ -209,6 +268,7 @@ class app:
             self.__sidebarWidth = 270
             self.__imagesActive = False
             self.__gameActive = False
+            
             
             
         # knop kies images categorie
@@ -240,27 +300,29 @@ class app:
         self.__quitButton.repostion(screenWidth - 50, 5)
         self.__quitButton.place(events, screenWidth)
         
-        # knop kies hond
-        self.__choseDog.place(display, events, (10, 5))
-        self.__choseDog.changeColorOnHover(color.ORANGE, color.RED)
-        if self.__choseDog.onClick():
-            self.__infoActive = False
-            self.__breeds = loadBreed(DOGBREEDS)
-            self.__selection = "dog"
-            scrollCounter[0] = 0
-            self.__hoverBreed = ""
-            self.__chosenBreed = ""
+        if self.__category != "game":
+        
+            # knop kies hond
+            self.__choseDog.place(display, events, (10, 5))
+            self.__choseDog.changeColorOnHover(color.ORANGE, color.RED)
+            if self.__choseDog.onClick():
+                self.__infoActive = False
+                self.__breeds = loadBreed(DOGBREEDS)
+                self.__selection = "dog"
+                scrollCounter[0] = 0
+                self.__hoverBreed = ""
+                self.__chosenBreed = ""
 
-        # knop kies kat
-        self.__choseCat.place(display, events, (140, 5))
-        self.__choseCat.changeColorOnHover(color.ORANGE, color.RED)
-        if self.__choseCat.onClick():
-            self.__infoActive = False
-            self.__breeds = loadBreed(CATBREEDS)
-            self.__selection = "cat"
-            scrollCounter[0] = 0
-            self.__hoverBreed = ""
-            self.__chosenBreed = ""
+            # knop kies kat
+            self.__choseCat.place(display, events, (140, 5))
+            self.__choseCat.changeColorOnHover(color.ORANGE, color.RED)
+            if self.__choseCat.onClick():
+                self.__infoActive = False
+                self.__breeds = loadBreed(CATBREEDS)
+                self.__selection = "cat"
+                scrollCounter[0] = 0
+                self.__hoverBreed = ""
+                self.__chosenBreed = ""
 
 
 
@@ -294,7 +356,7 @@ class app:
         if self.__chosenBreed == "" and self.__category == "info":
             self.__choseBreedText.centerd(self.__sidebarWidth, screenWidth, 50, screenHeight)
             self.__choseBreedText.place(color.BLACK, f"choose a {self.__selection}")
-        elif self.__allImages:
+        elif self.__allImages and self.__category != "game":
             self.__searchButton.resize(screenWidth - (self.__sidebarWidth + 10), 50, 5)
             self.__searchButton.text(font.H1, color.BLACK, "SEARCH")
             self.__searchButton.changeColorOnHover(color.GREY, color.LESSWHITE)
@@ -336,21 +398,30 @@ class app:
                     self.__imagesActive = True
                     self.updateImageSize()  
                 
-                if self.__category == "game":
-                    self.__GameDogImage = get(selection="dog")
-                    self.__GameCatImage = get(selection="cat")
-                    self.__getGameImages__()
+               
                     
-                    self.__petDogButton = button(0,0, color.BLUE, 5)
-                    self.__petCatButton = button(0,0, color.BLUE, 5)
-                    
-                    self.__hp = 100
-    
-    
+        elif self.__category == "game" and not self.__gameActive:
+            
+            self.__GameDogImage = get(selection="dog")
+            self.__GameCatImage = get(selection="cat")
+            self.__getGameImages__()
+            
+            self.__GamePetDogButton = button(0,0, color.BLUE, radius=5)
+            self.__GamePetDogButton.text(font.H1, color.BLACK, "pet the dog")
+            self.__GamePetCatButton = button(0,0, color.BLUE, radius=5)
+            self.__GamePetCatButton.text(font.H1, color.BLACK, "pet the cat")
+            
+            self.__GameText = text(display, font.FONT150, (0,0))
+            
+            self.__hp = 100
+            self.__gameActive = True
+            self.updateImageSize()
+            
+            
 
     def apiContent(self):
         """
-        hier wordt de content die je terug krijgt van de api verwerkt en verplaatst
+        hier wordt de content die je terug krijgt van de api verwerkt en geplaatst
         """
         """
         category info
@@ -420,7 +491,6 @@ class app:
                     if imageRect.collidepoint(mousePos) and action["mouseButtonClicked"]:
                         # laat foto in het groot zien
                         display.fill(color.WHITE)
-                        self.__bigImage = self.__imageSurfaces[image]
                         self.__bigImageSize = self.__originalImageSize[image]
                         self.__allImages = False
                         
@@ -436,17 +506,30 @@ class app:
                 self.__quitBigImage.place(events, 0)
 
         
-                    
-                    
-                    
-
         """
         category game
         
         
         """
         if self.__gameActive:
-            ...
+            # toon hondenfoto / knop
+            xPos = screenWidth - 50 - self.__imageSurfaces[0].get_width()
+            buttonYpos = screenHeight / 2 + self.__imageSurfaces[0].get_height() / 2 + 10
+            display.blit(self.__imageSurfaces[0], (xPos, screenHeight / 2 - self.__imageSurfaces[0].get_height() / 2)) 
+            
+            self.__GamePetDogButton.changeColorOnHover(color.DARKGREEN, color.GREEN)
+            self.__GamePetDogButton.place(display, events, (xPos, buttonYpos))
+            if self.__GamePetDogButton.onClick():
+                self.__getGameEvent__("dog")
+            
+            # toon kattenfoto / knop
+            display.blit(self.__imageSurfaces[1], (50, screenHeight / 2 - self.__imageSurfaces[1].get_height() / 2)) 
+            
+            self.__GamePetCatButton.changeColorOnHover(color.DARKGREEN, color.GREEN)
+            self.__GamePetCatButton.place(display, events, (50, buttonYpos))
+            if self.__GamePetCatButton.onClick():
+                self.__getGameEvent__("cat")
+            
             
     
     """
@@ -454,30 +537,37 @@ class app:
     
     """
     def updateImageSize(self):
+        x = 1400 if screenWidth < 1400 else screenWidth
+        y = 700 if screenHeight < 700 else screenHeight
+        
         if self.__category == "info":
-            xy = 700 if screenHeight < 700 else screenHeight
-            self.__updateImageSizes__(xy / 2, xy / 2)
+            self.__updateImageSizes__(y / 2, y / 2)
             
-        if self.__category == "images":
-            x = 1400 if screenWidth < 1400 else screenWidth
-            y = 700 if screenHeight < 700 else screenHeight        
+        elif self.__category == "images":
             self.__updateImageSizes__((x - 110) / 4 - 6, (y - 110) / 2 - 6)
         
-        if self.__category == "game":
-            pass
-        
+        elif self.__category == "game":
+            self.__updateImageSizes__(y / 1.4, y / 1.4)
+            
     
     def __updateImageSizes__(self, xcord, ycord):
         for index, image in enumerate(self.__imageSurfaces):
             self.__imageSurfaces[index] = pygame.transform.smoothscale(image, (xcord, ycord))
+            
         if self.__category == "info" and self.__breedID != "":
             self.__imageBackButton.resize(screenHeight / 4 - 3, 50, 5)
             self.__imageForwardButton.resize(screenHeight / 4 - 3, 50, 5) 
+            
+        elif self.__category == "game"  and self.__gameActive:
+            self.__GamePetDogButton.resize(self.__imageSurfaces[1].get_width(), 50, 5)
+            self.__GamePetCatButton.resize(self.__imageSurfaces[0].get_width(), 50, 5)
+            
         
         
     @property
     def breedHeight(self):
         return self.__breeds["height"]
+        
     
 
 APP = app() # maak app aan
@@ -493,15 +583,7 @@ while True:
     APP.sidebar()
     APP.header()
     APP.body()
-    
     APP.apiContent()
-    
-    
-    
-    # categorie game
-
-    
-    # header en sidebar
     
     
     if scrollCounter[0] < maxSidebarScroll:
