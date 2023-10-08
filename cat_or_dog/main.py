@@ -2,6 +2,7 @@ import pygame, requests, json, random
 from pygameaddons import *
 from os import path
 from io import BytesIO
+from pyperclip import copy
 from urllib.request import urlopen, Request
 
 CATAPIKEY = "live_Domf0oeKUtUcnVuuRcNS0yVh3BBvTSy9ee9TN9wt3WqupgEpKrb1sBncHhGKnAnW"
@@ -473,6 +474,8 @@ class app:
             # onder foto
             self.__name.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 180)
             self.__name.place(color.BLACK, self.__breedInfo["name"])
+            if self.__name.onHover() and action["mouseButtonClicked"]:
+                copy(self.__breedInfo["name"])
             
             self.__origin.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 220)
             try:

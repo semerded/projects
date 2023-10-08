@@ -123,11 +123,12 @@ class button:
                 self.__textColor = newColor
             else:
                 self.__buttonColor = newColor
+            return True
+        elif changeTextColor:
+            self.__textColor = oldColor
         else:
-            if changeTextColor:
-                self.__textColor = oldColor
-            else:
-                self.__buttonColor = oldColor
+            self.__buttonColor = oldColor
+        return False
             
     
     def onHold(self, function = None, *arguments, holdAfterMouseLeave: bool = False): # TODO fix 
@@ -298,8 +299,22 @@ class text:
         if self.__ycenter:
             self.__position[1] -= self.__textsurface.get_height() / 2      
         
-        self.__display.blit(self.__textsurface, (self.__position[0], self.__position[1]))
-
+        self.__textRect = self.__display.blit(self.__textsurface, (self.__position[0], self.__position[1]))
+        return self.__textRect
+    
+    def onHover(self):
+        mousePos = pygame.mouse.get_pos()
+        if self.__textRect.collidepoint(mousePos):
+            return True
+        return False
+    
+    @property
+    def rect(self):
+        return self.__textRect
+    
+    @property
+    def surface(self):
+        return self.__textsurface
         
 class textbox:
     def __init__(self, display, font, position: tuple[int,int]) -> None:
