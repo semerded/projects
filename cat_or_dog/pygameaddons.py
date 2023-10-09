@@ -323,21 +323,25 @@ class textbox:
         self.__position = position
         self.__font = font
         self.__text = text(display, font, position)
+        self.__activeText = None
         
     def __calcbox__(self, width, text: str):
+        self.__textBoxList = []
+        self.__activeText = text
         text = text.split(" ")
         line = ""
 
         for word in text:
-            surface = self.__font.render(f"{line} {word}", True, (0,0,0))
-            surface = surface.get_rect()
+            self.__surface = self.__font.render(f"{line} {word}", True, (0,0,0))
+            surface = self.__surface.get_rect()
             if surface[2] < width:
                 line += word + " "
             else:
-                self.__textBoxList.append(line)
+                self.__textBoxList.append(line[:-1])
                 line = word + " "
-        self.__textBoxList.append(line)        
+        self.__textBoxList.append(line[:-1]) 
         self.__textHeight = surface[3]
+        self.__boxHeight = surface[3] * len(self.__textBoxList)
         
         self.__calculatedWidth = width
     
@@ -345,8 +349,10 @@ class textbox:
         self.__position= (xcord, ycord)
     
     def place(self, width, color: tuple[int,int,int], text: str, centerd: bool = False):
-        if self.__calculatedWidth != width:
+        if self.__calculatedWidth != width or self.__activeText != text:
             self.__calcbox__(width, text)
+        self.__width = width
+       
         linecounter = 0
         for line in self.__textBoxList:
             if centerd:
@@ -356,10 +362,21 @@ class textbox:
             self.__text.place(color, line)
 
             linecounter += 1
+            
+    def onHover(self):
+        self.__boxRect = pygame.Rect(self.__position[0], self.__position[1], self.__width, self.boxheight)
+        mousePos = pygame.mouse.get_pos()
+        if self.__boxRect.collidepoint(mousePos):
+            return True
+        return False
     
     @property
     def boxheight(self):
-        return self.__textHeight
+        return self.__boxHeight
+    
+    
+    
+    
         
         
  
@@ -583,7 +600,7 @@ if __name__ == "__main__":
 
     pygame.init()
     screenWidth, screenHeight = windowInfo()
-    display = pygame.display.set_mode((500, 500), pygame.RESIZABLE | pygame.NOFRAME)
+    display = pygame.display.set_mode((500, 500), pygame.RESIZABLE)
     clock = pygame.time.Clock()
     test = button(100, 50, color.WHITE, 10)
     test.text(font.H3, color.RED, "button")
@@ -613,6 +630,7 @@ if __name__ == "__main__":
         
         box.place(400, color.BLACK, "dit is een text waarmee ik gebruik maak van textboxes zoals html probeer ik dit zelf nu lol", True)
         # print(pygame.mouse.get_pos())
+        print(box.boxheight)
         
         for event in events:
             if event.type == pygame.QUIT:

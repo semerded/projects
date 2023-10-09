@@ -38,6 +38,20 @@ def updateCalls(dog: bool, cat: bool): # update de lijst van apicalls
     with open(JSONSETUPFILE, 'w') as json_file: # update bestand
                 json.dump(savefile, json_file, indent = 4, separators=(',',': '))
 
+def getFacts(selection):
+        if selection == "dog":
+            FACTURL = "https://dog-api.kinduff.com/api/facts?number=1" # voor honden
+        else:
+            FACTURL = "https://catfact.ninja/fact" # voor katten
+            
+        fact = requests.get(FACTURL).json()
+        if selection == "dog":
+            return fact["facts"][0]
+        elif selection == "cat":
+            return fact["fact"]
+        else:
+            return "error"
+
 class get: # hierin wordt de api opgeroepen en de data verwerkt
     def __init__(self, breedID :str = "", selection: str = "", category: str = "", amount: int = 1) -> None:
         self.__breedID = breedID
@@ -55,7 +69,6 @@ class get: # hierin wordt de api opgeroepen en de data verwerkt
         # klaarmaken van url
         apikey = self.__getAPIkey__()
         BreedImageURL = f"https://api.the{self.__selection}api.com/v1/images/search?limit={self.__amount}&api_key={apikey}"
-        print(BreedImageURL)
         if self.__category == "info":
             BreedImageURL += f"&breed_ids={self.__breedID}"
             
@@ -81,9 +94,9 @@ class get: # hierin wordt de api opgeroepen en de data verwerkt
             
             self.__originalImageSurface.append(originalSurface)
             self.__imageList.append(pyimage)
-        return self.__imageList, self.__originalImageSurface # geef de lijst met data terug
-    
-    
+        return self.__imageList, self.__originalImageSurface # geef de lijst met data terug           
+        
+        
     def __getAPIkey__(self): # maak de api key klaar
         if self.__selection == "cat":
             updateCalls(False, True)
@@ -158,6 +171,7 @@ class app:
         self.__gameButton = button(120, 40, color.BLUE, 5)
         self.__quitButton = Xbutton(display, size= 40)
         self.__category = "info"
+        self.__factButton = button(40, 40, color.DARKGRAY, 5)
         
         # sidebar
         self.__breeds = loadBreed(CATBREEDS)
@@ -179,7 +193,9 @@ class app:
         self.__choseBreedText = text(display, font.FONT100, (0, 0))
         self.__searchButton = button(screenWidth - 280, 50, color.GREY, radius=5) 
         self.__loadingText = text(display, font.customFont(200), (0,0))
+        self.__loadingFacts = textbox(display, font.H1, (0,0))
         self.__allImages = True
+        self.__fact = None
 
         # categorieën
         self.__imagesActive = False
@@ -230,6 +246,21 @@ class app:
                 "the cat hissed": -3,
                 "paw to face": -20,
                 "meawwww": 4,
+                "the cat ran away": -5,
+                "the cat was not amused": -1,
+                "the cat did nothing": 0,
+                "the cat was a hoax": -39,
+                "the cat was a lie": -29,
+                "the cat liked it": 5,
+                "the cat loved it": 15,
+                "the cat wanted food": 1,
+                "the cat wanted more pets": 10,
+                "the cat was an asshole": -7,
+                "the cat gave bad luck": -13,
+                "the cat gave good luck": 13,
+                "like literally nothing happend": 0,
+                "the cat was not a fan": -2,
+                "the cat wasn't washed in a couple of years": -22,                
                 
             },
             "dog": {
@@ -249,7 +280,7 @@ class app:
                 "the dog killed you": -999,
                 "the dog bit your finger of": -35,
                 "the dog bit your leg of": -50,
-                "the dog bit you in your nutsack": -98,
+                "the dog bit you in your balsack": -98,
                 "the dog licked your hand": 15,
                 "the dog did nothing": 0,
                 "the dog ran away": -5,
@@ -258,12 +289,36 @@ class app:
                 "the dog had dirty paws and made your white pants dirty": -13,
                 "bark bark": -5,
                 "arf arf (knocked loose refference)": 5,
+                "the dog liked it": 5,
+                "the dog loved it": 15,
+                "the dog liked you": 10,
+                "the dog was so excited he started peeing": 35,
+                "the dog loved you": 30,
+                "the dog wants more pets": 12,
+                "the dog was not a dog": -10,
+                "the dog appreciated the pet": 5,
+                "the dog was excited": 8,
+                "the dog was scared": -9,
+                "the dog barked alot": -13,
+                "the dog was very dirty": -23,
+                
             }
            
         }
         
         
         # hp handeler
+        
+    def __showFactAfterLoad__(self):
+        if self.__category != "game" and self.__fact != None:
+            self.__factButton.text(font.FONT50, color.WHITE, "i")
+            self.__factButton.place(display, events, (screenWidth - 100, 5))
+            self.__factButton.changeColorOnHover(color.DARKGRAY, color.GRAY)
+            if self.__factButton.onClick():
+                print(self.__fact)
+                
+            
+            
         
     def header(self):
         # header achtergrond
@@ -311,6 +366,9 @@ class app:
         # exit knop
         self.__quitButton.repostion(screenWidth - 50, 5)
         self.__quitButton.place(events, screenWidth)
+        
+        # als er een fact is gegeven
+        self.__showFactAfterLoad__()
         
         if self.__category != "game":
         
@@ -375,7 +433,13 @@ class app:
             self.__searchButton.place(display, events, (self.__sidebarWidth + 5, 55))
             if self.__searchButton.onClick(actionOnRelease=True):
                 self.__loadingText.centerd(self.__sidebarWidth, screenWidth, 50, screenHeight)
+                self.__loadingFacts.reposition(self.__sidebarWidth, screenHeight / 2 + 100)
+                
                 self.__loadingText.place(color.random(), "loading...")
+                self.__fact = getFacts(self.__selection)
+                
+                self.__loadingFacts.place(screenWidth - self.__sidebarWidth, color.random(), self.__fact, True)
+                pygame.draw.rect(display, color.GREEN, pygame.Rect(screenWidth - 100, 5, 40, 40)) # om de i te verstoppen tijdens het laden
                 pygame.display.flip() # bij het ophalen van de info blijft het scherm tijdelijk hangen
                 # zolang hij dus aan het laden is zal de text op het scherm blijven staan
                 
@@ -398,7 +462,7 @@ class app:
                     self.__imageCounter = 0
                 
                     # text voor onder de foto
-                    self.__name = text(display, font.FONT50, (0,0))
+                    self.__name = textbox(display, font.FONT50, (0,0))
                     self.__origin = text(display, font.H1, (0,0))
                     self.__temperament = textbox(display, font.H3, (0,0))
                 
@@ -472,20 +536,19 @@ class app:
             display.blit(self.__imageSurfaces[self.__imageCounter], (280, 115))
         
             # onder foto
-            self.__name.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 180)
-            self.__name.place(color.BLACK, self.__breedInfo["name"])
+            self.__name.reposition(275, screenHeight / 2 + 180)
+            self.__name.place(screenHeight / 2, color.BLACK, self.__breedInfo["name"], True)
             if self.__name.onHover() and action["mouseButtonClicked"]:
                 copy(self.__breedInfo["name"])
-            
-            self.__origin.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 220)
+            self.__origin.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 190 + self.__name.boxheight)
             try:
                 origin = self.__breedInfo["origin"]
             except KeyError:
                 origin = "Unknown"
             self.__origin.place(color.DARKGRAY, origin)
             
-            self.__temperament.reposition(275, screenHeight / 2 + 250)
-            self.__temperament.place(screenHeight / 2 - 10, color.GRAY, self.__breedInfo["temperament"], True)
+            self.__temperament.reposition(275, screenHeight / 2 + 220 + self.__name.boxheight)
+            self.__temperament.place(screenHeight / 2, color.GRAY, self.__breedInfo["temperament"], True)
         
         
         """
@@ -611,7 +674,6 @@ while True:
     APP.header()
     APP.body()
     APP.apiContent()
-    
     
     if scrollCounter[0] < maxSidebarScroll:
         scrollCounter[0] = maxSidebarScroll
