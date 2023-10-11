@@ -28,6 +28,7 @@ def setup(): # checkt hoevaak je nog de api kunt oproepen TODO reset elke maand
         if input("less than 10 calls left! continue?: ").lower() != "y":
             raise ValueError("script stopped because not enough keys left")
 setup()
+# EVENTS = savefile["events"]
 
 def updateCalls(dog: bool, cat: bool): # update de lijst van apicalls
     # update alleen wat nodig is
@@ -43,8 +44,11 @@ def getFacts(selection):
             FACTURL = "https://dog-api.kinduff.com/api/facts?number=1" # voor honden
         else:
             FACTURL = "https://catfact.ninja/fact" # voor katten
+        try:
+            fact = requests.get(FACTURL).json()
+        except:
+            return "fact_not_loaded"
             
-        fact = requests.get(FACTURL).json()
         if selection == "dog":
             return fact["facts"][0]
         elif selection == "cat":
@@ -146,6 +150,8 @@ print(windowInfo())
 display = pygame.display.set_mode((displayW - 100, displayH - 100), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 screenWidth, screenHeight = windowInfo()
+HPheartImg = pygame.image.load("heart.png")
+HPheartImg = pygame.transform.scale(HPheartImg, (100, 100))
  
 maxSidebarScroll = -99999999999999999999999 # ja geen uitleg nodig
 action = {
@@ -172,6 +178,7 @@ class app:
         self.__quitButton = Xbutton(display, size= 40)
         self.__category = "info"
         self.__factButton = button(40, 40, color.DARKGRAY, 5)
+        self.factMenu = False
         
         # sidebar
         self.__breeds = loadBreed(CATBREEDS)
@@ -196,6 +203,8 @@ class app:
         self.__loadingFacts = textbox(display, font.H1, (0,0))
         self.__allImages = True
         self.__fact = None
+        
+        self.__gameEventText = textbox(display, font.H1, (0,0))
 
         # categorieën
         self.__imagesActive = False
@@ -206,7 +215,7 @@ class app:
     def __closeBigImage__(self):
         self.__allImages = True
         
-    def __getGameImages__(self): # TODO fix als er geen foto opgehaald wordt
+    def __getGameImages__(self):
         self.__imageSurfaces = []
         while True:
             dogImage, temp = self.__GameDogImage.getImages()
@@ -223,102 +232,123 @@ class app:
         self.__hp += hpdifference
         if self.__hp <= 0:
             ...
+        else:
+            if self.__hp > 100:
+                self.__hp = 100
+            self.__getGameImages__()
+            self.updateImageSize()
         
     def __getGameEvent__(self, animal):
-        EVENTS = {
-            "cat": {
-                "you've been scrached by the cat": -30, 
-                "the cat liked you but he didn't let you pet him": -5,
-                "the cat was scared and ran away": -10,
-                "the cat was angry and attacked you": -25, 
-                "you got a disease from the cat": -99,
-                "the cat liked you": 10,
-                "the cat loved you": 30,
-                "the cat wanted to be adopted": 99,
-                "the cat wanted to be pet": 20, 
-                "ultimate scratch attack": -50,
-                "the cat was possessed by satan": -66,
-                "the cat turned around twice": 2,
-                "the cat turned around once": 1,
-                "the cat pooped": -10,
-                "the cat did a cat thing": 3,
-                "the cat licked you": 20,
-                "the cat hissed": -3,
-                "paw to face": -20,
-                "meawwww": 4,
-                "the cat ran away": -5,
-                "the cat was not amused": -1,
-                "the cat did nothing": 0,
-                "the cat was a hoax": -39,
-                "the cat was a lie": -29,
-                "the cat liked it": 5,
-                "the cat loved it": 15,
-                "the cat wanted food": 1,
-                "the cat wanted more pets": 10,
-                "the cat was an asshole": -7,
-                "the cat gave bad luck": -13,
-                "the cat gave good luck": 13,
-                "like literally nothing happend": 0,
-                "the cat was not a fan": -2,
-                "the cat wasn't washed in a couple of years": -22,                
-                
-            },
-            "dog": {
-                "the dog wanted a pet": 15,
-                "the dog was a good boy": 5,
-                "nothing happend": 0,
-                "the dog was a bad boy": -5,
-                "the dog peed on your shoes": -10,
-                "the dog peed on your shoes but you liked it (weird)": 10,
-                "the dog shit on the floor": -15,
-                "the dog attacked": -25,
-                "the dog was a government spy": -40,
-                "the dog liked you": 10,
-                "the dog liked you a bit more": 15,
-                "the dog licked you": 20,
-                "the dog had rabies": -99,
-                "the dog killed you": -999,
-                "the dog bit your finger of": -35,
-                "the dog bit your leg of": -50,
-                "the dog bit you in your balsack": -98,
-                "the dog licked your hand": 15,
-                "the dog did nothing": 0,
-                "the dog ran away": -5,
-                "the dog started humping your leg": -10,
-                "the dog barked": -3,
-                "the dog had dirty paws and made your white pants dirty": -13,
-                "bark bark": -5,
-                "arf arf (knocked loose refference)": 5,
-                "the dog liked it": 5,
-                "the dog loved it": 15,
-                "the dog liked you": 10,
-                "the dog was so excited he started peeing": 35,
-                "the dog loved you": 30,
-                "the dog wants more pets": 12,
-                "the dog was not a dog": -10,
-                "the dog appreciated the pet": 5,
-                "the dog was excited": 8,
-                "the dog was scared": -9,
-                "the dog barked alot": -13,
-                "the dog was very dirty": -23,
-                
-            }
-           
-        }
+        EVENTS ={ "cat": {
+            "you've been scrached by the cat": -30,
+            "the cat liked you but he didn't let you pet him": -5,
+            "the cat was scared and ran away": -10,
+            "the cat was angry and attacked you": -25,
+            "you got a disease from the cat": -99,
+            "the cat liked you": 10,
+            "the cat loved you": 30,
+            "the cat wanted to be adopted": 99,
+            "the cat wanted to be pet": 20,
+            "ultimate scratch attack": -50,
+            "the cat was possessed by satan": -66,
+            "the cat turned around twice": 2,
+            "the cat turned around once": 1,
+            "the cat pooped": -10,
+            "the cat did a cat thing": 3,
+            "the cat licked you": 20,
+            "the cat hissed": -3,
+            "paw to face": -20,
+            "meawwww": 4,
+            "the cat ran away": -5,
+            "the cat was not amused": -1,
+            "the cat did nothing": 0,
+            "the cat was a hoax": -39,
+            "the cat was a lie": -29,
+            "the cat liked it": 5,
+            "the cat loved it": 15,
+            "the cat wanted food": 1,
+            "the cat wanted more pets": 10,
+            "the cat was an asshole": -7,
+            "the cat gave bad luck": -13,
+            "the cat gave good luck": 13,
+            "like literally nothing happend": 0,
+            "the cat was not a fan": -2,
+            "the cat wasn't washed in a couple of years": -22
+        },
+        "dog": {
+            "the dog wanted a pet": 15,
+            "the dog was a good boy": 5,
+            "nothing happend": 0,
+            "the dog was a bad boy": -5,
+            "the dog peed on your shoes": -10,
+            "the dog peed on your shoes but you liked it (weird)": 10,
+            "the dog shit on the floor": -15,
+            "the dog attacked": -25,
+            "the dog was a government spy": -40,
+            "the dog liked you": 10,
+            "the dog liked you a bit more": 15,
+            "the dog licked you": 20,
+            "the dog had rabies": -99,
+            "the dog killed you": -999,
+            "the dog bit your finger of": -35,
+            "the dog bit your leg of": -50,
+            "the dog bit you in your balsack": -98,
+            "the dog licked your hand": 15,
+            "the dog did nothing": 0,
+            "the dog ran away": -5,
+            "the dog started humping your leg": -10,
+            "the dog barked": -3,
+            "the dog had dirty paws and made your white pants dirty": -13,
+            "bark bark": -5,
+            "arf arf (knocked loose refference)": 5,
+            "the dog liked it": 5,
+            "the dog loved it": 15,
+            "the dog was so excited he started peeing": 35,
+            "the dog loved you": 30,
+            "the dog wants more pets": 12,
+            "the dog was not a dog": -10,
+            "the dog appreciated the pet": 5,
+            "the dog was excited": 8,
+            "the dog was scared": -9,
+            "the dog barked alot": -13,
+            "the dog was very dirty": -23
+        }}
+  
+            
+        event = random.choice(list(EVENTS[animal].keys()))
+        print(event)
+        self.__showGameText__(event)
+
+        self.__hpHandeler__(EVENTS[animal][event])
         
+    def __showGameText__(self, text):
+        self.__gameEventText.__calcbox__(screenWidth / 2, text)
+        pygame.draw.rect(display, color.BLACK, pygame.Rect(screenWidth / 4 - 15,  screenHeight / 4 - 15, screenWidth / 2 + 25, screenHeight / 2 + 25), border_radius=15)
+        pygame.draw.rect(display, color.WHITE, pygame.Rect(screenWidth / 4 - 5,  screenHeight / 4 - 5, screenWidth / 2 + 5, screenHeight / 2 + 5), border_radius=5)
+        self.__gameEventText.reposition(screenWidth / 4, screenHeight / 2 - self.__gameEventText.boxheight / 2)
+        self.__gameEventText.place(screenWidth / 2, color.BLACK, text, True)
+        pygame.display.update()
         
-        # hp handeler
-        
+    
+    def __closeFactMenu__(self):
+        self.factMenu = False  
     def __showFactAfterLoad__(self):
         if self.__category != "game" and self.__fact != None:
             self.__factButton.text(font.FONT50, color.WHITE, "i")
             self.__factButton.place(display, events, (screenWidth - 100, 5))
             self.__factButton.changeColorOnHover(color.DARKGRAY, color.GRAY)
             if self.__factButton.onClick():
-                print(self.__fact)
-                
+                self.factMenu = True
+                self.__factBox = textbox(display, font.H2, (0,0))
+                self.__factQuitButton = Xbutton(display, self.__closeFactMenu__)
+                self.__factBox.__calcbox__(200, self.__fact)
+                print(self.__factBox.boxheight)
+
             
+            # fact wordt getoond onder api content
+                    
             
+          
         
     def header(self):
         # header achtergrond
@@ -437,9 +467,11 @@ class app:
                 
                 self.__loadingText.place(color.random(), "loading...")
                 self.__fact = getFacts(self.__selection)
+                self.factMenu = False
                 
                 self.__loadingFacts.place(screenWidth - self.__sidebarWidth, color.random(), self.__fact, True)
                 pygame.draw.rect(display, color.GREEN, pygame.Rect(screenWidth - 100, 5, 40, 40)) # om de i te verstoppen tijdens het laden
+                pygame.display.set_caption("het reageert wel hoor")
                 pygame.display.flip() # bij het ophalen van de info blijft het scherm tijdelijk hangen
                 # zolang hij dus aan het laden is zal de text op het scherm blijven staan
                 
@@ -473,10 +505,11 @@ class app:
                     self.__imageAmount = imageTab.imageAmount
                     self.__imagesActive = True
                     self.updateImageSize()  
-                
+                pygame.display.set_caption("the ultimate pet app")
                
                     
         elif self.__category == "game" and not self.__gameActive:
+            self.factMenu = False
             
             self.__GameDogImage = get(selection="dog")
             self.__GameCatImage = get(selection="cat")
@@ -489,7 +522,6 @@ class app:
             self.__GameDoNothingButton = button(0, 0, color.RED, radius=5)
             self.__GameDoNothingButton.text(font.H1, color.BLACK, "do nothing")
             
-            self.__GameText = text(display, font.FONT150, (0,0))
             
             self.__hp = 100
             self.__gameActive = True
@@ -598,25 +630,52 @@ class app:
             
             self.__GamePetDogButton.changeColorOnHover(color.DARKGREEN, color.GREEN)
             self.__GamePetDogButton.place(display, events, (xPos, buttonYpos))
-            if self.__GamePetDogButton.onClick():
-                self.__getGameEvent__("dog")
+           
             
             # toon kattenfoto / knop
             display.blit(self.__imageSurfaces[1], (50, screenHeight / 2 - self.__imageSurfaces[1].get_height() / 2)) 
             
             self.__GamePetCatButton.changeColorOnHover(color.DARKGREEN, color.GREEN)
             self.__GamePetCatButton.place(display, events, (50, buttonYpos))
-            if self.__GamePetCatButton.onClick():
-                self.__getGameEvent__("cat")
-                
+            
+             
+            whitespace = screenWidth / 2 - (screenWidth / 2 - (50 + self.__imageSurfaces[0].get_width()))
+            print(whitespace)
             # doe niets
             self.__GameDoNothingButton.changeColorOnHover(color.RED, color.LESSRED)
-            self.__GameDoNothingButton.place(display, events, (screenWidth / 2 - (screenWidth / 2 - (50 + self.__imageSurfaces[0].get_width())) + 5, buttonYpos))
-            if self.__GameDoNothingButton.onClick():
-                self.__hpHandeler__(-random.randint(5, 10))
-                print(self.__hp)
-                self.__getGameImages__()
-                self.updateImageSize()
+            self.__GameDoNothingButton.place(display, events, (whitespace + 5, buttonYpos))
+            
+            """
+            eerst wordt alles gerenderd voordat de knoppen worden gelezen
+            dit om te voorkomen dat een foto verdwijnt
+            """
+            if self.__GamePetDogButton.onClick():
+                self.__getGameEvent__("dog")
+                
+            elif self.__GamePetCatButton.onClick():
+                self.__getGameEvent__("cat")
+                
+            elif self.__GameDoNothingButton.onClick():
+                hp = -random.randint(5, 10)
+                diff = self.__hp + hp
+                self.__showGameText__("you did nothing %shp left" % diff)
+                self.__hpHandeler__(hp)
+            
+            # toon hp
+            display.blit(HPheartImg, (whitespace, screenHeight / 2 - 50))
+            simpleText(display, font.customFont(120), (whitespace + 100, screenHeight / 2 - 40), color.RED, self.__hp)   
+            
+        
+        if self.factMenu:
+            # toon fact onder aan scherm
+            print(True)
+            pygame.draw.rect(display, color.BLACK, pygame.Rect(screenWidth - 225, screenHeight - self.__factBox.boxheight - 80, 225, self.__factBox.boxheight + 80), border_radius=15)
+            pygame.draw.rect(display, color.WHITE, pygame.Rect(screenWidth - 215, screenHeight - self.__factBox.boxheight - 70, 205, self.__factBox.boxheight + 60), border_radius=5)
+            self.__factBox.reposition(screenWidth - 210, screenHeight - self.__factBox.boxheight - 30)
+            self.__factBox.place(200, color.GRAY, self.__fact)  
+            self.__factQuitButton.repostion(screenWidth - 40, screenHeight - self.__factBox.boxheight - 70) 
+            self.__factQuitButton.place(events, 0)  
+                
                 
             
             
