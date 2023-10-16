@@ -521,7 +521,11 @@ class app:
                 description = f""
             elif self.__selection == "dog":
                 self.__description.changeFont(font.FONT50)
-                weightHeight = f"weight: {self.__breedInfo['weight']['metric']}kg \n height: {self.__breedInfo['height']['metric']}cm"
+                try:
+                    breedgroup = self.__breedInfo['weight']['metric']
+                except KeyError:
+                    breedgroup = "n/a"
+                weightHeight = f"weight: {breedgroup}kg \n height: {self.__breedInfo['height']['metric']}cm"
                 description = f"breed group: {self.__breedInfo['breed_group']} \n bred for: {self.__breedInfo['bred_for']}"
             else:
                 weightHeight = "None"

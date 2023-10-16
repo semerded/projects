@@ -263,7 +263,7 @@ class text:
         self.__position = [xcord, ycord]
         
     def changeFont(self, newFont):
-        self.__font == newFont
+        self.__font = newFont
         
     def border(self, color: tuple[int,int,int], borderWidth: int, borderRadius: int = -1):
         self.__surface = self.__textsurface.get_rect()
@@ -349,6 +349,7 @@ class textbox:
         self.__textBoxList.append(line[:-1]) 
         self.__textHeight = surface[3]
         self.__boxHeight = surface[3] * len(self.__textBoxList)
+        print(self.__font)
         
         self.__calculatedWidth = width
     
@@ -356,7 +357,7 @@ class textbox:
         self.__position= (xcord, ycord)
     
     def changeFont(self, newFont):
-        self.__font == newFont
+        self.__font = newFont
     
     def place(self, width, color: tuple[int,int,int], text: str, centerd: bool = False):
         if self.__calculatedWidth != width or self.__activeText != text:
