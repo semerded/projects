@@ -262,6 +262,9 @@ class text:
     def reposition(self, xcord: float, ycord: float):
         self.__position = [xcord, ycord]
         
+    def changeFont(self, newFont):
+        self.__font == newFont
+        
     def border(self, color: tuple[int,int,int], borderWidth: int, borderRadius: int = -1):
         self.__surface = self.__textsurface.get_rect()
         self.__borderWidth = borderWidth
@@ -334,11 +337,15 @@ class textbox:
         for word in text:
             self.__surface = self.__font.render(f"{line} {word}", True, (0,0,0))
             surface = self.__surface.get_rect()
-            if surface[2] < width:
+            
+            if surface[2] < width and word != "\n":
                 line += word + " "
             else:
                 self.__textBoxList.append(line[:-1])
-                line = word + " "
+                if word == "\n":
+                    line = ""
+                else:
+                    line = word + " "
         self.__textBoxList.append(line[:-1]) 
         self.__textHeight = surface[3]
         self.__boxHeight = surface[3] * len(self.__textBoxList)
@@ -347,6 +354,9 @@ class textbox:
     
     def reposition(self, xcord, ycord):
         self.__position= (xcord, ycord)
+    
+    def changeFont(self, newFont):
+        self.__font == newFont
     
     def place(self, width, color: tuple[int,int,int], text: str, centerd: bool = False):
         if self.__calculatedWidth != width or self.__activeText != text:

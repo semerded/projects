@@ -1,6 +1,6 @@
 {
-    "dogcalls": 9794,
-    "catcalls": 9716,
+    "dogcalls": 9681,
+    "catcalls": 9593,
     "maxInfoPictures": 5,
     "events": {
         "cat": {
@@ -37,7 +37,8 @@
             "the cat gave good luck": 13,
             "like literally nothing happend": 0,
             "the cat was not a fan": -2,
-            "the cat wasn't washed in a couple of years": -22
+            "the cat wasn't washed in a couple of years": -22,
+            "a random explosion happend": -101
         },
         "dog": {
             "the dog wanted a pet": 15,

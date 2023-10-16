@@ -1,20 +1,17 @@
 import pygame, requests, json, random
-from pygameaddons import *
+from pygameaddons import * # eigen gemaakte library
 from os import path
 from io import BytesIO
 from pyperclip import copy
 from urllib.request import urlopen, Request
 
+# api keys voor de api  {NIET AANKOMEN!!!}
 CATAPIKEY = "live_Domf0oeKUtUcnVuuRcNS0yVh3BBvTSy9ee9TN9wt3WqupgEpKrb1sBncHhGKnAnW"
 DOGAPIKEY = "live_K4sjv4DLuGrrFq5MngAPs06ToR4gEWqN094L04eXNROEQOua6ckkUSyTcFHiLqUw"
 
 JSONSETUPFILE = "setup.json"
 CATBREEDS = "catbreed.json"
 DOGBREEDS = "dogbreed.json"
-
-
-dogImageURL = f"https://api.thedogapi.com/v1/images/search?limit={9}&api_key={CATAPIKEY}"
-caImagetURL = f"https://api.thecatapi.com/v1/images/search?limit={9}&api_key={CATAPIKEY}"
 
 def setup(): # checkt hoevaak je nog de api kunt oproepen TODO reset elke maand
     global savefile
@@ -28,7 +25,7 @@ def setup(): # checkt hoevaak je nog de api kunt oproepen TODO reset elke maand
         if input("less than 10 calls left! continue?: ").lower() != "y":
             raise ValueError("script stopped because not enough keys left")
 setup()
-# EVENTS = savefile["events"]
+EVENTS = savefile["events"]
 
 def updateCalls(dog: bool, cat: bool): # update de lijst van apicalls
     # update alleen wat nodig is
@@ -39,16 +36,17 @@ def updateCalls(dog: bool, cat: bool): # update de lijst van apicalls
     with open(JSONSETUPFILE, 'w') as json_file: # update bestand
                 json.dump(savefile, json_file, indent = 4, separators=(',',': '))
 
-def getFacts(selection):
+def getFacts(selection): # krijg leuke feitjes tijdens het laden
         if selection == "dog":
             FACTURL = "https://dog-api.kinduff.com/api/facts?number=1" # voor honden
         else:
             FACTURL = "https://catfact.ninja/fact" # voor katten
         try:
-            fact = requests.get(FACTURL).json()
-        except:
+            fact = requests.get(FACTURL).json() # haal het feitje op
+        except: # mocht er iets misgaan
             return "fact_not_loaded"
             
+        # haal het feitje uit de api dict
         if selection == "dog":
             return fact["facts"][0]
         elif selection == "cat":
@@ -119,12 +117,9 @@ class get: # hierin wordt de api opgeroepen en de data verwerkt
     def imageSize(self): # geeft de grote de afbeeldingen terug
         return self.__imageSize
         
-    
-    def getGameImage(self):
-        pass
 
-scrollCounter = [0,0]
-def scroll(event, maxSidebarScroll):
+scrollCounter = [0,0] # origineel zou het programma 2 of meer scrollposities aankunnen maar er is uiteindelijk maar 1 ingebouwd
+def scroll(event, maxSidebarScroll): # regel het scrollen voor het programma
     global scrollCounter
     
     # omhoog scrollen = negatief
@@ -141,20 +136,20 @@ def scroll(event, maxSidebarScroll):
 
 """
 pygame setup
+
+hier wordt alles voor het visuele programma klaargemaakt
 """
 pygame.init()
 pygame.display.set_caption("under construction") #TODO
-pygame.key.set_repeat(400, 30)  # press every 50 ms after waiting 200 ms
-displayW, displayH = windowInfo()
-print(windowInfo())
-display = pygame.display.set_mode((displayW - 100, displayH - 100), pygame.RESIZABLE)
-clock = pygame.time.Clock()
-screenWidth, screenHeight = windowInfo()
+displayW, displayH = windowInfo() # krijg de grote van het scherm van de gebruiker
+display = pygame.display.set_mode((displayW - 100, displayH - 100), pygame.RESIZABLE) # stel het scherm in op de grote van de gebruiker 
+clock = pygame.time.Clock() # klok om de framerate te bepalen
+screenWidth, screenHeight = windowInfo() # krijg de grote van het pygame scherm
 HPheartImg = pygame.image.load("heart.png")
 HPheartImg = pygame.transform.scale(HPheartImg, (100, 100))
  
 maxSidebarScroll = -99999999999999999999999 # ja geen uitleg nodig
-action = {
+action = { # alle acties in een programma 
     "mouseButtonClicked": False
 }
 
@@ -194,7 +189,6 @@ class app:
         self.__chosenBreed = ""
 
         # body
-        self.__imageSize = 0
         self.__sidebarWidth = 270
         self.__imageSurfaces = []
         self.__choseBreedText = text(display, font.FONT100, (0, 0))
@@ -204,7 +198,7 @@ class app:
         self.__allImages = True
         self.__fact = None
         
-        self.__gameEventText = textbox(display, font.H1, (0,0))
+        self.__gameEventText = textbox(display, font.FONT50, (0,0))
 
         # categorieën
         self.__imagesActive = False
@@ -212,7 +206,7 @@ class app:
         self.__gameActive = False
         
     
-    def __closeBigImage__(self):
+    def __closeBigImage__(self): # om de uitvergrote foto te sluiten
         self.__allImages = True
         
     def __getGameImages__(self):
@@ -230,96 +224,23 @@ class app:
         
     def __hpHandeler__(self, hpdifference):
         self.__hp += hpdifference
-        if self.__hp <= 0:
-            ...
-        else:
+        if self.__hp > 0:
             if self.__hp > 100:
                 self.__hp = 100
-            self.__getGameImages__()
-            self.updateImageSize()
+        return hpdifference
         
-    def __getGameEvent__(self, animal):
-        EVENTS ={ "cat": {
-            "you've been scrached by the cat": -30,
-            "the cat liked you but he didn't let you pet him": -5,
-            "the cat was scared and ran away": -10,
-            "the cat was angry and attacked you": -25,
-            "you got a disease from the cat": -99,
-            "the cat liked you": 10,
-            "the cat loved you": 30,
-            "the cat wanted to be adopted": 99,
-            "the cat wanted to be pet": 20,
-            "ultimate scratch attack": -50,
-            "the cat was possessed by satan": -66,
-            "the cat turned around twice": 2,
-            "the cat turned around once": 1,
-            "the cat pooped": -10,
-            "the cat did a cat thing": 3,
-            "the cat licked you": 20,
-            "the cat hissed": -3,
-            "paw to face": -20,
-            "meawwww": 4,
-            "the cat ran away": -5,
-            "the cat was not amused": -1,
-            "the cat did nothing": 0,
-            "the cat was a hoax": -39,
-            "the cat was a lie": -29,
-            "the cat liked it": 5,
-            "the cat loved it": 15,
-            "the cat wanted food": 1,
-            "the cat wanted more pets": 10,
-            "the cat was an asshole": -7,
-            "the cat gave bad luck": -13,
-            "the cat gave good luck": 13,
-            "like literally nothing happend": 0,
-            "the cat was not a fan": -2,
-            "the cat wasn't washed in a couple of years": -22
-        },
-        "dog": {
-            "the dog wanted a pet": 15,
-            "the dog was a good boy": 5,
-            "nothing happend": 0,
-            "the dog was a bad boy": -5,
-            "the dog peed on your shoes": -10,
-            "the dog peed on your shoes but you liked it (weird)": 10,
-            "the dog shit on the floor": -15,
-            "the dog attacked": -25,
-            "the dog was a government spy": -40,
-            "the dog liked you": 10,
-            "the dog liked you a bit more": 15,
-            "the dog licked you": 20,
-            "the dog had rabies": -99,
-            "the dog killed you": -999,
-            "the dog bit your finger of": -35,
-            "the dog bit your leg of": -50,
-            "the dog bit you in your balsack": -98,
-            "the dog licked your hand": 15,
-            "the dog did nothing": 0,
-            "the dog ran away": -5,
-            "the dog started humping your leg": -10,
-            "the dog barked": -3,
-            "the dog had dirty paws and made your white pants dirty": -13,
-            "bark bark": -5,
-            "arf arf (knocked loose refference)": 5,
-            "the dog liked it": 5,
-            "the dog loved it": 15,
-            "the dog was so excited he started peeing": 35,
-            "the dog loved you": 30,
-            "the dog wants more pets": 12,
-            "the dog was not a dog": -10,
-            "the dog appreciated the pet": 5,
-            "the dog was excited": 8,
-            "the dog was scared": -9,
-            "the dog barked alot": -13,
-            "the dog was very dirty": -23
-        }}
-  
-            
+    def __getGameEvent__(self, animal):            
         event = random.choice(list(EVENTS[animal].keys()))
-        print(event)
-        self.__showGameText__(event)
-
-        self.__hpHandeler__(EVENTS[animal][event])
+        hpdifference = self.__hpHandeler__(EVENTS[animal][event])
+        if hpdifference > 0:
+            hptext = f"you gained {hpdifference}hp"
+        elif hpdifference < 0:
+            hptext = f"you lost {abs(hpdifference)}hp"
+        else:
+            hptext = "like nothing really happend"
+        self.__showGameText__(f"{event} \n {hptext} \n \n {self.__hp}hp left")
+        
+        
         
     def __showGameText__(self, text):
         self.__gameEventText.__calcbox__(screenWidth / 2, text)
@@ -328,6 +249,8 @@ class app:
         self.__gameEventText.reposition(screenWidth / 4, screenHeight / 2 - self.__gameEventText.boxheight / 2)
         self.__gameEventText.place(screenWidth / 2, color.BLACK, text, True)
         pygame.display.update()
+        self.__getGameImages__()
+        self.updateImageSize()
         
     
     def __closeFactMenu__(self):
@@ -342,7 +265,6 @@ class app:
                 self.__factBox = textbox(display, font.H2, (0,0))
                 self.__factQuitButton = Xbutton(display, self.__closeFactMenu__)
                 self.__factBox.__calcbox__(200, self.__fact)
-                print(self.__factBox.boxheight)
 
             
             # fact wordt getoond onder api content
@@ -494,9 +416,16 @@ class app:
                     self.__imageCounter = 0
                 
                     # text voor onder de foto
-                    self.__name = textbox(display, font.FONT50, (0,0))
+                    self.__name = textbox(display, font.FONT50, (0,0)) # 0,0 betekent dat de positie later wordt aangepast
                     self.__origin = text(display, font.H1, (0,0))
                     self.__temperament = textbox(display, font.H3, (0,0))
+                    
+                    # text langs foto
+                    self.__description = textbox(display, font.H3, (0,0))
+                    self.__weightHeight = textbox(display, font.H1, (0,0))
+                    self.__lifespan = text(display, font.H1, (0,0))
+                    self.__extraInfo = textbox(display, font.H3, (0,0)) # voor honden is dit "breed_group" en "bred_for", voor katten de sterren
+                  
                 
                 if self.__category == "images":
                     imageTab = get(selection=self.__selection, category=self.__category, amount=8)
@@ -566,12 +495,15 @@ class app:
                     
          
             display.blit(self.__imageSurfaces[self.__imageCounter], (280, 115))
-        
+
+            
+            # screenheight / 2 is de afmeting van de foto zijn x en y as
+            
             # onder foto
             self.__name.reposition(275, screenHeight / 2 + 180)
             self.__name.place(screenHeight / 2, color.BLACK, self.__breedInfo["name"], True)
             if self.__name.onHover() and action["mouseButtonClicked"]:
-                copy(self.__breedInfo["name"])
+                copy(self.__breedInfo["name"]) # wanneer op de naam wordt geklikt word de naam gekopieërd naar het klembord
             self.__origin.centerdWidth(270, 270 + screenHeight / 2, screenHeight / 2 + 190 + self.__name.boxheight)
             try:
                 origin = self.__breedInfo["origin"]
@@ -582,7 +514,30 @@ class app:
             self.__temperament.reposition(275, screenHeight / 2 + 220 + self.__name.boxheight)
             self.__temperament.place(screenHeight / 2, color.GRAY, self.__breedInfo["temperament"], True)
         
-        
+            # naast foto
+            # diverse inhoud maken
+            if self.__selection == "cat":
+                weightHeight = f"weight: {self.__breedInfo['weight']['metric']}kg"
+                description = f""
+            elif self.__selection == "dog":
+                self.__description.changeFont(font.FONT50)
+                weightHeight = f"weight: {self.__breedInfo['weight']['metric']}kg \n height: {self.__breedInfo['height']['metric']}cm"
+                description = f"breed group: {self.__breedInfo['breed_group']} \n bred for: {self.__breedInfo['bred_for']}"
+            else:
+                weightHeight = "None"
+                description = "None"
+            boxWidth = screenWidth - (screenHeight / 2 + 300)
+            self.__weightHeight.reposition(280 + screenHeight / 2, 120)
+            
+            self.__weightHeight.place(boxWidth, color.BLUE, weightHeight)
+            
+            self.__lifespan.reposition(280 + screenHeight / 2, 120 + self.__weightHeight.boxheight)
+            self.__lifespan.place(color.LIGHTBLUE, self.__breedInfo['life_span'])
+            
+            self.__description.reposition(280 + screenHeight / 2, 140 + self.__weightHeight.boxheight)
+            
+            self.__description.place(boxWidth, color.BLACK, description)
+            
         """
         category images
         
@@ -590,6 +545,9 @@ class app:
         
             * alleen 24 en 32 bit foto's worden getoond, sommige doorgekregen foto's voldoen daar niet aan
                 Hierdoor worden er soms minder foto's getoond
+        
+        de foto's kunnen vergroot worden door er op te klikken
+        zo krijg je wel de foto te zien in zijn originele afmetingen
         """   
         if self.__imagesActive:
             if self.__allImages:
@@ -620,7 +578,11 @@ class app:
         """
         category game
         
-        
+        het spel is opgebouwd uit 2 foto's en 3 knoppen
+        je kunt kiezen om de hond of de kat te aaien
+        hierbij wordt een random event getoond en de hierbij horende levens opgeteld of afgetrokken
+        je kunt ook kiezen om niks te doen maar dan verlies je zoizo levens
+        het is niet compitetief bedoeld, gewoon voor de fun
         """
         if self.__gameActive:
             # toon hondenfoto / knop
@@ -640,7 +602,6 @@ class app:
             
              
             whitespace = screenWidth / 2 - (screenWidth / 2 - (50 + self.__imageSurfaces[0].get_width()))
-            print(whitespace)
             # doe niets
             self.__GameDoNothingButton.changeColorOnHover(color.RED, color.LESSRED)
             self.__GameDoNothingButton.place(display, events, (whitespace + 5, buttonYpos))
@@ -649,7 +610,9 @@ class app:
             eerst wordt alles gerenderd voordat de knoppen worden gelezen
             dit om te voorkomen dat een foto verdwijnt
             """
-            if self.__GamePetDogButton.onClick():
+            if self.__hp <= 0:
+                self.__showGameText__("game over")
+            elif self.__GamePetDogButton.onClick():
                 self.__getGameEvent__("dog")
                 
             elif self.__GamePetCatButton.onClick():
@@ -658,17 +621,21 @@ class app:
             elif self.__GameDoNothingButton.onClick():
                 hp = -random.randint(5, 10)
                 diff = self.__hp + hp
-                self.__showGameText__("you did nothing %shp left" % diff)
-                self.__hpHandeler__(hp)
+                hpdifference = self.__hpHandeler__(hp)
+                self.__showGameText__(f"you did nothing \n you lost {abs(hpdifference)} \n \n %shp left" % diff)
+            else:
             
-            # toon hp
-            display.blit(HPheartImg, (whitespace, screenHeight / 2 - 50))
-            simpleText(display, font.customFont(120), (whitespace + 100, screenHeight / 2 - 40), color.RED, self.__hp)   
-            
+                # toon hp
+                display.blit(HPheartImg, (whitespace, screenHeight / 2 - 50))
+                simpleText(display, font.customFont(120), (whitespace + 100, screenHeight / 2 - 40), color.RED, self.__hp)   
+                
         
+        """
+        tijdens het laden wordt er een feitje getoond
+        als je niet de tijd kreeg om dit feitje te lezen kun je hem altijd nog een keer zien
+        """
         if self.factMenu:
             # toon fact onder aan scherm
-            print(True)
             pygame.draw.rect(display, color.BLACK, pygame.Rect(screenWidth - 225, screenHeight - self.__factBox.boxheight - 80, 225, self.__factBox.boxheight + 80), border_radius=15)
             pygame.draw.rect(display, color.WHITE, pygame.Rect(screenWidth - 215, screenHeight - self.__factBox.boxheight - 70, 205, self.__factBox.boxheight + 60), border_radius=5)
             self.__factBox.reposition(screenWidth - 210, screenHeight - self.__factBox.boxheight - 30)
@@ -711,8 +678,6 @@ class app:
             self.__GamePetCatButton.resize(self.__imageSurfaces[0].get_width(), 50, 5)
             self.__GameDoNothingButton.resize(screenWidth - self.__imageSurfaces[0].get_width() * 2 - 110, 50, 5)
             
-        
-        
     @property
     def breedHeight(self):
         return self.__breeds["height"]
