@@ -1,6 +1,4 @@
 {
-    "dogcalls": 9676,
-    "catcalls": 9592,
     "maxInfoPictures": 5,
     "events": {
         "cat": {
@@ -78,5 +76,27 @@
             "the dog barked alot": -13,
             "the dog was very dirty": -23
         }
+    },
+    "stars": {
+        "lap": "lap",
+        "adaptability": "adaptability",
+        "affection_level": "affection level",
+        "child_friendly": "child friendly",
+        "dog_friendly": "dog friendly",
+        "energy_level": "energy level",
+        "grooming": "grooming",
+        "health_issues": "health issues",
+        "intelligence": "intelligence",
+        "shedding_level": "shedding level",
+        "social_needs": "social needs",
+        "stranger_friendly": "stranger friendly",
+        "vocalisation": "vocalisation",
+        "experimental": "experimental",
+        "hairless": "hairless",
+        "natural": "natural",
+        "rare": "rare",
+        "suppressed_tail": "suppressed tail",
+        "short_legs": "short legs",
+        "hypoallergenic": "hypoallergenic"
     }
 }

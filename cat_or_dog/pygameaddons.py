@@ -1,14 +1,19 @@
-import random, os
+import random, os, sys
 try:
     import pygame
 except ModuleNotFoundError:
     raise ModuleNotFoundError("install pygame with 'pip install pygame'")
-try:
-    import pygame_textinput
-except ModuleNotFoundError:
-    raise ModuleNotFoundError("install pygame_textinput with 'pip install pygame_textinput'")
 
+"""
+eigen gemaakte library
+documentatie is schaars omdat ik bezig ben een nieuwe te maken die iets anders werkt (soort tkinter manier)
+(en ik had geen tijd meer) 
+"""
 
+def isEven(number: int):
+    if number % 2 == 0:
+        return True
+    return False
 
 
 class button:
@@ -129,7 +134,8 @@ class button:
         else:
             self.__buttonColor = oldColor
         return False
-            
+
+# gaat u dit echt lezen?            
     
     def onHold(self, function = None, *arguments, holdAfterMouseLeave: bool = False): # TODO fix 
         if self.__mouseInButton and self.__mouseButtonDown and self.__clickedNotInButton == False:
@@ -327,6 +333,7 @@ class textbox:
         self.__font = font
         self.__text = text(display, font, position)
         self.__activeText = None
+        self.__display = display
         
     def __calcbox__(self, width, text: str):
         self.__textBoxList = []
@@ -348,8 +355,8 @@ class textbox:
                     line = word + " "
         self.__textBoxList.append(line[:-1]) 
         self.__textHeight = surface[3]
+        
         self.__boxHeight = surface[3] * len(self.__textBoxList)
-        print(self.__font)
         
         self.__calculatedWidth = width
     
@@ -358,6 +365,8 @@ class textbox:
     
     def changeFont(self, newFont):
         self.__font = newFont
+        self.__text = text(self.__display, newFont, self.__position)
+
     
     def place(self, width, color: tuple[int,int,int], text: str, centerd: bool = False):
         if self.__calculatedWidth != width or self.__activeText != text:
@@ -385,6 +394,10 @@ class textbox:
     def boxheight(self):
         return self.__boxHeight
     
+    @property
+    def textheight(self):
+        return self.__textHeight
+    
     
     
     
@@ -397,7 +410,7 @@ built in shortcuts
 this library comes with some presets to make some developing easier
 """       
 class Xbutton:
-    def __init__(self, display, actionOnClick = exit, defaultColor: tuple[int,int,int] = (120, 120, 120), size: float = 30, position: tuple[int,int] = (0,0), radius: int = 5, actionOnRelease: bool = True) -> None:
+    def __init__(self, display, actionOnClick, defaultColor: tuple[int,int,int] = (120, 120, 120), size: float = 30, position: tuple[int,int] = (0,0), radius: int = 5, actionOnRelease: bool = True) -> None:
         self.__quitButton = button(size, size, defaultColor, radius)
         self.__display = display
         self.__defaultColor = defaultColor
@@ -439,69 +452,7 @@ class Xbutton:
         self.__ycord = ycord
         self.__repostioned = True
 
-"""in progress"""
-class menuKeys:
-    def __init__(self, display, screenDimensions: tuple[int,int], menuColor: tuple[int,int,int] = (120, 120, 120), size: float = 30) -> None:
-        self.__exitButton = Xbutton(display, exit, menuColor, size, radius=0, actionOnRelease=True)
-        self.__textColor = self.__exitButton.__getCrossColor__()
-        self.__maximizeButton = button(size, size, menuColor, 0)
-        self.__maximizeButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 40), self.__textColor, "+")
-        self.__minimizeButton = button(size, size, menuColor, 0)
-        self.__minimizeButton.text(pygame.font.SysFont(pygame.font.get_default_font(), 40), self.__textColor, "~")
-        
-        self.__mouseButtonDown = False
-        self.__display = display
-        self.__menuColor = menuColor
-        self.__size = size
-        self.__displayInfo = [screenDimensions[0], screenDimensions[1]]
-        self.__oldmousePos = (0,0)
-        
-    def menuPlace(self, events, screenwidth: float, screenheight: float):
-        self.__exitButton.place(events, screenwidth)
-        
-        self.__minimizeButton.place(self.__display, events, (screenwidth - self.__size * 3, 0))
-        self.__minimizeButton.changeColorOnHover(self.__menuColor, (0,255,0))
-        self.__minimizeButton.onClick(pygame.display.iconify, actionOnRelease=True)
-        
-        self.__maximizeButton.place(self.__display, events, (screenwidth - self.__size * 2, 0))
-        self.__maximizeButton.changeColorOnHover(self.__menuColor, (255, 255, 0))
-        self.__resize__(events)
-        if self.__maximizeButton.onClick():
-            displayScreenW, displayScreenH = windowInfo()
-            
-            if screenwidth == displayScreenW and screenheight == displayScreenH:
-                self.__oldScreenSize = [screenwidth, screenheight]
-                return pygame.display.set_mode((self.__displayInfo[0], self.__displayInfo[1]))
-            else:
-                return pygame.display.set_mode((self.__oldScreenSize[0], self.__oldScreenSize[1]), pygame.RESIZABLE | pygame.NOFRAME)
-        return self.__display
-    
-    def __resize__(self, events):
-        
-        mousePos = pygame.mouse.get_pos()
-        screenWidth, screenHeight = windowInfo()
-        if mousePos[0] <= 2 and mousePos[0] > 0 or mousePos[0] >= screenWidth - 3:
-            for event in events:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__mouseButtonDown = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    self.__mouseButtonDown = False
-            if self.__mouseButtonDown:
-                    return pygame.display.set_mode((abs(abs(mousePos[0]) - abs(self.__oldmousePos[0])), screenHeight), pygame.RESIZABLE | pygame.NOFRAME)
-        if mousePos[1] <= 2 or mousePos[1] >= screenHeight - 3:
-            for event in events:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__oldmousePos = pygame.mouse.get_pos()
-                    self.__mouseButtonDown = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    self.__mouseButtonDown = False
-                    
-            if self.__mouseButtonDown:
-                    return pygame.display.set_mode((screenWidth, abs(abs(mousePos[1]) - abs(self.__oldmousePos[1]))), pygame.RESIZABLE | pygame.NOFRAME)
 
-               
-      
-             
         
 def windowInfo():
     """
@@ -565,6 +516,7 @@ class color:
     LESSRED = (200, 0, 0)
     LESSGREEN = (0, 200, 0)
     LESSBLUE = (0, 0, 200)
+    LIGHTGRAY = LIGHTGREY = (150, 150, 150)
     GRAY = GREY = (100,100,100)
     DARKGRAY = DARKGREY = (50,50,50)
     DARKMODEGRAY = DARKMODEGREY = (30,30,30)
@@ -576,7 +528,7 @@ class color:
             tuple.append(random.randint(0, 255))
         return (tuple[0], tuple[1], tuple[2])
         
-
+pygame.font.init()
             
 
 class font:
