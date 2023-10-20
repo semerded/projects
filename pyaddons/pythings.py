@@ -25,3 +25,8 @@ def intput(message: str ="", errorMessage: str = "input was not an int", repeatU
                 return
             continue
         return int(prompt)
+
+def isEven(number: int):
+    if number % 2 == 0:
+        return True
+    return False
