@@ -8,6 +8,8 @@ pygame.init()
 pygame.font.init()
 screenInfo = pygame.display.Info()
 
+colorValue = tuple[int,int,int]
+
 class color:
     RED = (255,0,0)
     LAVARED = (255,40,0)
@@ -64,13 +66,13 @@ class font:
             return pygame.font.SysFont(pygame.font.get_default_font(), size)
         else:
             return pygame.font.SysFont(font, size)
+        
 
-
-class App():
+class AppConstructor():
     def __init__(self, screenWidth, screenHeight, *flags) -> None:
         self.APPdisplay = pygame.display.set_mode((screenWidth, screenHeight) ,*flags)
-        self.__userInputs = {"keyDown": None, "keyUp": None, "mouseAction": None, "mouseUp": None, "controller": None}
-        self.__mouseAction = {"click": False, "motion": False, "scroll": False}
+        self.__userInputs = {"keyDown": None, "keyUp": None, "mouseDown": None, "mouseUp": None, "mouseAction": None, "mouseUp": None, "controller": None}
+        self.__mouseAction = {"click": [False, False, False, False, False], "motion": False, "scroll": False}
         self.__callkeys = {
             "keyboard": {
                 pygame.K_a: ["a", "A", "key_a", "key_A", "KEY_a", "KEY_A", "keya", "keyA", "k_a", "k_A", "K_a", "K_A"],
@@ -99,7 +101,16 @@ class App():
                 pygame.K_x: ["x", "X", "key_x", "key_X", "KEY_x", "KEY_X", "keyx", "keyX", "k_x", "k_X", "K_x", "K_X"],
                 pygame.K_y: ["y", "Y", "key_y", "key_Y", "KEY_y", "KEY_Y", "keyy", "keyY", "k_y", "k_Y", "K_y", "K_Y"],
                 pygame.K_z: ["z", "Z", "key_z", "key_Z", "KEY_z", "KEY_Z", "keyz", "keyZ", "k_z", "k_Z", "K_z", "K_Z"],
-            }
+            },
+            "mouse": {
+                    1: ["button1", "mouse1", "Button1", "Mouse1", "M1", "m1", "b1", "B1", "LMB", "Lmb", "lmb", "LeftMouseButton", "leftmousebutton", "leftMouseButton", "MouseButton1", "mousebutton1", "Mousebutton1", "mouseButton1"],
+                    2: ["button2", "mouse2", "Button2", "Mouse2", "M2", "m2", "b2", "B2",  "MMB", "Mmb", "mmb", "MiddleMouseButton", "middlemousebutton", "middleMouseButton", "MouseButton2", "mousebutton2", "Mousebutton2", "mouseButton2"],
+                    3: ["button3", "mouse3", "Button3", "Mouse3", "M3", "m3", "b3", "B3","RMB", "Rmb", "rmb", "RightMouseButton", "rightmousebutton", "rightMouseButton", "MouseButton3", "mousebutton3", "Mousebutton3", "mouseButton3"],
+                    4: ["button4", "mouse4", "Button4", "Mouse4", "M4", "m4", "b4", "B4", "SMB1", "Smb1", "smb1", "SideMouseButton1", "MouseButton4", "mousebutton4", "Mousebutton4", "mouseButton4"],
+                    5: ["button5", "mouse5", "Button5", "Mouse5", "M5", "m5", "b5", "B5", "SMB2", "Smb2", "smb2", "SideMouseButton2", "MouseButton5", "mousebutton5", "Mousebutton5", "mouseButton5"],
+                    "motion": ["mouseMotion", "motion", "Motion", "MOTION", "MOVEMENT", "mousemotion", "movement", "Movement", "mouseMovement", "MouseMovement"],
+                    "scroll": ["scroll", "SCROLL", "scr", "SCR", "Scroll", "MouseScroll", "mouseScroll", "Scr", "Scrll", "SCRLL", "scrll"] 
+            },
         }
         self.__event = None
         
@@ -111,9 +122,25 @@ class App():
         if self.__event.key == callkey:
             for call in self.__callkeys['keyboard'][callkey]:
                 if call in self.__userInputs[direction]:
-                    self.__fire__(call, direction)
-                    break  
-        
+                    try:
+                        self.__userInputs[direction][call]()
+                    except:
+                        print("function on input '%s' could not be fired" % call)
+                    break 
+                
+    def mouse(self, callkey, keyDown: bool = True):
+        direction = "mouseDown" if keyDown else "mouseUp"
+        if self.__event.button == callkey:
+            for call in self.__callkeys['mouse'][callkey]:
+                if call in self.__userInputs[direction]:
+                    try:
+                        self.__userInputs[direction][call]()
+                    except:
+                        print("function on input '%s' could not be fired" % call)
+                    break 
+   
+    
+         
     def eventHandeler(self, events, *inputs):
         """
         handles all events in game
@@ -125,7 +152,7 @@ class App():
 
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.KEYDOWN and self.__userInputs["keyDown"] != None:
+            elif event.type == pygame.KEYDOWN and self.__userInputs["keyDown"] != None:
                 self.keyboard(pygame.K_a)
                 self.keyboard(pygame.K_b)
                 self.keyboard(pygame.K_c)
@@ -153,7 +180,7 @@ class App():
                 self.keyboard(pygame.K_y)
                 self.keyboard(pygame.K_z)
             
-            if event.type == pygame.KEYUP and self.__userInputs["keyUp"] != None:
+            elif event.type == pygame.KEYUP and self.__userInputs["keyUp"] != None:
                 self.keyboard(pygame.K_a, False)
                 self.keyboard(pygame.K_b, False)
                 self.keyboard(pygame.K_c, False)
@@ -181,74 +208,115 @@ class App():
                 self.keyboard(pygame.K_y, False)
                 self.keyboard(pygame.K_z, False)
                 
-            if self.__userInputs["mouseAction"] != None:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and "LMB" in self.__userInputs["mouseAction"]:
-                        self.__fire__("LMB", "mouseAction")
-                    
-                    elif event.button == 2 and "p":
-                        pass
-                    
-            
-                if event.type == pygame.MOUSEBUTTONUP and "up" in self.__userInputs["mouseAction"]:
-                    self.__fire__("up", "mouseAction")
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.__userInputs["mouseDown"] != None:
+                if event.button == 1:
+                    self.mouse(1)
+                elif event.button == 2:
+                    self.mouse(2)
+                elif event.button == 3:
+                    self.mouse(3)
+                elif event.button == 4:
+                    self.mouse(4)
+                elif event.button == 5:
+                    self.mouse(5)
                 
-                if event.type == pygame.MOUSEMOTION and "motion" in self.__userInputs["mouseAction"]:
-                    self.__fire__("motion", "mouseAction")
+            elif event.type == pygame.MOUSEBUTTONUP and self.__userInputs["mouseUp"] != None:
+                if event.button == 1:
+                    self.mouse(1, False)
+                elif event.button == 2:
+                    self.mouse(2, False)
+                elif event.button == 3:
+                    self.mouse(3, False)
+                elif event.button == 4:
+                    self.mouse(4, False)
+                elif event.button == 5:
+                    self.mouse(5, False)
                 
-                if event.type == pygame.MOUSEWHEEL and "scroll" in self.__userInputs["mouseAction"]:
-                    self.__fire__("scroll", "mouseAction")
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__mouseAction["click"] = True
+                if event.button == 1:
+                    self.__mouseAction["click"][0] = True
+                if event.button == 2:
+                    self.__mouseAction["click"][1] = True
+                if event.button == 3:
+                    self.__mouseAction["click"][2] = True
+                if event.button == 4:
+                    self.__mouseAction["click"][3] = True
+                if event.button == 5:
+                    self.__mouseAction["click"][4] = True
                 
             if event.type == pygame.MOUSEBUTTONUP:
-                self.__mouseAction["click"] = False
-            
-            if event.type == pygame.MOUSEMOTION:
+                if event.button == 1:
+                    self.__mouseAction["click"][0] = False
+                if event.button == 2:
+                    self.__mouseAction["click"][1] = False
+                if event.button == 3:
+                    self.__mouseAction["click"][2] = False
+                if event.button == 4:
+                    self.__mouseAction["click"][3] = False
+                if event.button == 5:
+                    self.__mouseAction["click"][4] = False
+                
+            if event.type == pygame.MOUSEMOTION and self.__userInputs != None:
                 self.__mouseAction["motion"] = True
             else:
                 self.__mouseAction["motion"] = False
             
-            if event.type == pygame.MOUSEWHEEL:
+            if event.type == pygame.MOUSEWHEEL and self.__userInputs != None:
                 self.__mouseAction["scroll"] = True
             else:
                 self.__mouseAction["scroll"] = False
             
-            
-    def __fire__(self, input: str, type: str):
-        try:
-            self.__userInputs[type][input]()
-        except:
-            print("function on input '%s' could not be fired" % input)
-    
-                
+         
+           
     def __assembler__(self, type:str, kwargs):
         self.__userInputs[type] = kwargs
     
     def keyDown(self, **kwargs):
+        """
+        fires the function if the desired key is pressed\n
+        important:\n
+        \tthe function dedecatited to the key doesn't have brackets ()\n
+        \t\t`right` --> helloWorldFunction\n
+        \t\t`wrong` --> helloWorldFunction()\n
+        
+        """
         self.__assembler__("keyDown", kwargs)
         
     def keyUp(self, **kwargs):
         self.__assembler__("keyUp", kwargs)
     
-    def mouseAction(self, **kwargs):
-        self.__assembler__("mouseAction", kwargs)
-
+    def mouseDown(self, **kwargs):
+        self.__assembler__("mouseDown", kwargs)
+        
+    def mouseUp(self, **kwargs):
+        self.__assembler__("mouseUp", kwargs)
+    
     
 
     @property
     def maindisplay(self) -> pygame.surface:
         return self.APPdisplay            
     
+    def mouseButton(self, button: int = 1) -> bool:
+        """
+        gives back if the selected mousebutton is pressed\n
+        give as argument a number between 1 and 5 (LMB, MMB, RMB, SMB1, SMB2)\n
+        (default = LMB)
+        """
+        return self.__mouseAction["click"][button - 1]
+    
     @property
-    def mouseButton(self) -> bool:
-        return self.__mouseAction["click"]
+    def mouseMotion(self) -> bool:
+        return self.__mouseAction["motion"]
+    
+    @property
+    def mouseScroll(self) -> bool:
+        return self.__mouseAction["scroll"]
     
     class text:
-        def __init_subclass__(cls,
-                              ) -> None:
-            pass
+
+        pass
         
         def place(self):
             pass
@@ -264,14 +332,14 @@ class button:
     def __init__(self,
                  size: tuple[screenUnit,screenUnit],
                  textColor: tuple[int,int,int] = color.BLACK,
-                 bgColor: tuple[int,int,int] = color.LESSWHITE,
+                 bgColor: colorValue = color.LESSWHITE,
                  borderTickness: int = 2,
-                 borderColor: tuple[int,int,int] = color.BLACK,
+                 borderColor: colorValue = color.BLACK,
                  borderRadius: int = 0,
                  onClick = ...,
                  onHold = ...,
                  onHover = ...,
-                 colorOnHover: tuple[int,int,int] = ...,
+                 colorOnHover: colorValue = ...,
                  
                  
                  ) -> None:
