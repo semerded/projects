@@ -1,15 +1,23 @@
 import pyperclip
-text = input().split(".")
-newText = []
-for part in text:
-    newText.append(part.split("?"))
-text = []
-print(newText)
-for part in newText:
-    text.append(part.split("!"))
-newText = ""
-for sentence in newText:
-    newText += sentence.capitalize() + " "
-    
-    
-pyperclip.copy(newText)
+
+def capitalizeSentence(mark: str, prompt: str):
+    prompt = prompt.split(mark)
+    newText = []
+    for index, sentence in enumerate(prompt):
+        if sentence[0] == " ":
+            sentence = " " +  sentence[1].upper() + sentence[2:]
+        else:
+            sentence = " " + sentence[0].upper() + sentence[1:]
+        if index != len(sentence):
+            sentence += mark
+        newText.append(sentence)
+    string =  ''.join(newText)
+    return string
+
+prompt = input("sentence: ")
+prompt = capitalizeSentence(".", prompt)
+prompt = capitalizeSentence("?", prompt)
+prompt = capitalizeSentence("!", prompt)
+prompt = prompt[:-3]
+prompt = prompt[1:]
+pyperclip.copy(prompt)
