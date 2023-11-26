@@ -1,3 +1,6 @@
+import time
+import threading
+
 def isNumber(input, errorMessage: str = "") -> bool:
     try:
         int(input)
@@ -26,7 +29,16 @@ def intput(message: str ="", errorMessage: str = "input was not an int", repeatU
             continue
         return int(prompt)
 
-def isEven(number: int):
-    if number % 2 == 0:
-        return True
-    return False
+
+
+
+
+# counter = 0
+# while True:
+#     counter += 1
+#     print(counter)
+#     time.sleep(0.1)
+    
+    
+
+    

@@ -10,7 +10,7 @@ screenInfo = pygame.display.Info()
 
 colorValue = tuple[int,int,int]
 
-class color:
+class Color:
     RED = (255,0,0)
     LAVARED = (255,40,0)
     ORANGE = (255,80,0)
@@ -42,7 +42,7 @@ class color:
             tuple.append(random.randint(0, 255))
         return (tuple[0], tuple[1], tuple[2])
     
-class font:
+class Font:
     H1 = pygame.font.SysFont(pygame.font.get_default_font(), 34)
     H2 = pygame.font.SysFont(pygame.font.get_default_font(), 30)
     H3 = pygame.font.SysFont(pygame.font.get_default_font(), 24)
@@ -113,6 +113,7 @@ class AppConstructor():
             },
         }
         self.__event = None
+        self.__scrollActivated = False
         
     def __center__(self):
         pass
@@ -266,6 +267,10 @@ class AppConstructor():
                 self.__mouseAction["scroll"] = True
             else:
                 self.__mouseAction["scroll"] = False
+                
+            if event.type == pygame.MOUSEWHEEL:
+                if self.__scrollActivated:
+                    print("scrolling")
             
          
            
@@ -284,18 +289,45 @@ class AppConstructor():
         self.__assembler__("keyDown", kwargs)
         
     def keyUp(self, **kwargs):
+        """
+        fires the function if the desired key is released\n
+        important:\n
+        \tthe function dedecatited to the key doesn't have brackets ()\n
+        \t\t`right` --> helloWorldFunction\n
+        \t\t`wrong` --> helloWorldFunction()\n
+        
+        """
         self.__assembler__("keyUp", kwargs)
     
     def mouseDown(self, **kwargs):
+        """
+        fires the function if the desired mouseButton is pressed\n
+        important:\n
+        \tthe function dedecatited to the key doesn't have brackets ()\n
+        \t\t`right` --> helloWorldFunction\n
+        \t\t`wrong` --> helloWorldFunction()\n
+        
+        """
         self.__assembler__("mouseDown", kwargs)
         
     def mouseUp(self, **kwargs):
+        """
+        fires the function if the desired mouseButton is released\n
+        important:\n
+        \tthe function dedecatited to the key doesn't have brackets ()\n
+        \t\t`right` --> helloWorldFunction\n
+        \t\t`wrong` --> helloWorldFunction()\n
+        
+        """
         self.__assembler__("mouseUp", kwargs)
     
-    
+    # def set_scroll(self, numberOfScrollElements):
+    #     self.__scrollActivated = True
+        
 
     @property
     def maindisplay(self) -> pygame.surface:
+        "pygame main surface"
         return self.APPdisplay            
     
     def mouseButton(self, button: int = 1) -> bool:
@@ -308,33 +340,51 @@ class AppConstructor():
     
     @property
     def mouseMotion(self) -> bool:
+        "gives true when the mouse is in motion"
         return self.__mouseAction["motion"]
     
     @property
     def mouseScroll(self) -> bool:
+        "gives true when the scroll wheel is in motion"
         return self.__mouseAction["scroll"]
     
-    class text:
+  
+   
+
+              
+  
+class Scroll(AppConstructor):
+    def __init__(self) -> None:
+        super(AppConstructor, self).__init__(self)
+    
+    @property
+    def set_scroll(self):
+        self.__scrollActivated = True
+        
+    @property
+    def get_scroll(self):
+        return self.__scrollActivated
+
+
+class screenUnit:
+    pass
+
+class Text:
 
         pass
         
         def place(self):
             pass
-        
-    class update:
-        pass
 
 
-class screenUnit:
-    pass
     
-class button:
+class Button:
     def __init__(self,
                  size: tuple[screenUnit,screenUnit],
-                 textColor: tuple[int,int,int] = color.BLACK,
-                 bgColor: colorValue = color.LESSWHITE,
+                 textColor: tuple[int,int,int] = Color.BLACK,
+                 bgColor: colorValue = Color.LESSWHITE,
                  borderTickness: int = 2,
-                 borderColor: colorValue = color.BLACK,
+                 borderColor: colorValue = Color.BLACK,
                  borderRadius: int = 0,
                  onClick = ...,
                  onHold = ...,

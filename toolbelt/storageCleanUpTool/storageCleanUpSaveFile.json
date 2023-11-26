@@ -1,0 +1,640 @@
+{
+    "1GB": [
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Docker\\wsl\\data\\ext4.vhdx",
+            "22.782410752 GB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\945475152\\end 4K 2.0.mp4",
+            "1.781113628 GB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\RaceLeague Demo\\RaceLeague_Data\\resources.assets.resS",
+            "1.220316388 GB"
+        ]
+    ],
+    "100MB": [
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\IECPL\\Media\\Data1.cab",
+            "885.318068 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1915396780\\Above Nyc 4K V2.mp4",
+            "837.442253 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Temp\\docker-scout\\sha256\\c1de5e42e9810c29273d9f9ddead5ff088219e49f31bdd274125b452efd551fe\\99691794-8018-4bae-bbfb-d559ac5aedf7.tar",
+            "804.5184 MB"
+        ],
+        [
+            "c:/Program Files\\Docker\\Docker\\resources\\services.iso",
+            "758.218752 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\HM_AllEditions\\Media\\Data1.cab",
+            "721.583691 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\HM_NoBasic\\Media\\Data1.cab",
+            "682.265905 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\visualize\\Visual~1.cab",
+            "648.384401 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1612865998\\nycwpeloop4k.mp4",
+            "611.547767 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\ES\\Media\\Data1.cab",
+            "582.28388 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\Progra~1.cab",
+            "533.051671 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\i386_S~5.cab",
+            "487.852135 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\962397701\\apocalyptic-city_1.mp4",
+            "483.571138 MB"
+        ],
+        [
+            "c:/Program Files\\Docker\\Docker\\resources\\wsl\\docker-wsl-cli.iso",
+            "466.614272 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\visualize\\Spatial.cab",
+            "465.664451 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1640891860\\Forza Horizon 4 Main Menu.mp4",
+            "439.472818 MB"
+        ],
+        [
+            "c:/Program Files\\Android\\Android Studio\\lib\\app.jar",
+            "428.118476 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Docker\\wsl\\distro\\ext4.vhdx",
+            "404.750336 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\859349216\\Background_leopard1.mp4",
+            "393.562452 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Google\\Chrome\\Application\\119.0.6045.160\\Installer\\chrome.7z",
+            "365.718321 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\2114001757\\SampleProject.mp4",
+            "347.333828 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\PreReqs\\SQLServer\\sqlexpr_x64_enu.exe",
+            "337.112352 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\SCADA-RT\\Media\\Data1.cab",
+            "301.826451 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\SQL\\EXP\\en_sql_server_2017_express_x64_11301593.exe",
+            "289.058768 MB"
+        ],
+        [
+            "c:/Program Files\\Docker\\Docker\\resources\\docker-desktop.iso",
+            "281.552896 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\FLUTTER\\flutter\\.git\\objects\\pack\\pack-5312fa9eff3bd31ede60e300db0d620648118760.pack",
+            "278.753715 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Microsoft\\Edge\\Application\\119.0.2151.72\\msedge.dll",
+            "269.149632 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Microsoft\\EdgeCore\\119.0.2151.72\\msedge.dll",
+            "269.149632 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\119.0.2151.72\\msedge.dll",
+            "269.149632 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\931403650\\1_1.mp4",
+            "264.339477 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1059450186\\Fire loop.mp4",
+            "260.159058 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1851602703\\wallpaper.mp4",
+            "257.170938 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\RaceLeague Demo\\RaceLeague_Data\\sharedassets1.assets.resS",
+            "237.37652 MB"
+        ],
+        [
+            "c:/ProgramData\\PASCO Scientific\\PASCOCapstone_Win-2.3.1.1.exe",
+            "236.8326 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Google\\Chrome\\Application\\119.0.6045.160\\chrome.dll",
+            "228.67536 MB"
+        ],
+        [
+            "c:/ProgramData\\Adobe\\Setup\\{AC76BA86-7AD7-1043-7B44-AC0F074E4100}\\AcroRdrDCUpd1900820071.msp",
+            "226.619392 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\UMC\\Media\\Data1.cab",
+            "225.566083 MB"
+        ],
+        [
+            "c:/ProgramData\\PASCO Scientific\\PASCO_Capstone-2.1.0.10.exe",
+            "222.969616 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\plastics\\Help.cab",
+            "212.328314 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Downloaded Installations\\{D91094BB-AD3C-498C-892D-303A83AC14D4}\\PicoScope6.msi",
+            "210.305024 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\827148653\\Gargantua_BGM.mp4",
+            "208.377344 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\cam\\CAM.cab",
+            "205.884611 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1433660601\\elmos gonna dance.mp4",
+            "205.26375 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\2590983618\\Untitled.mp4",
+            "199.863807 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2022 2023 klas 5IICT elektriciteit, notitieblok\\_Inhoudsbibliotheek\\elektriciteit 5IICT.one (op 3-09-2023).one",
+            "194.825351 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2022 2023 klas 5IICT elektriciteit, notitieblok\\_Inhoudsbibliotheek\\elektriciteit 5IICT.one (op 7-06-2023).one",
+            "194.298853 MB"
+        ],
+        [
+            "c:/Program Files\\Docker\\Docker\\resources\\wsl\\docker-for-wsl.iso",
+            "190.74048 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\Prosave\\Media\\SECO-PROSAVE\\Data1.cab",
+            "187.125956 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2022 2023 klas 5IICT elektriciteit, notitieblok\\Sem VanBroekhoven\\elektriciteit 5IICT.one (op 3-09-2023).one",
+            "186.862633 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\WinCC-Tr-Mandatory\\Media\\Data1.cab",
+            "184.755823 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2022 2023 klas 5IICT elektriciteit, notitieblok\\Sem VanBroekhoven\\elektriciteit 5IICT.one (op 7-06-2023).one",
+            "184.243617 MB"
+        ],
+        [
+            "c:/ProgramData\\Adobe\\Setup\\{AC76BA86-7AD7-1043-7B44-AC0F074E4100}\\Data1.cab",
+            "179.940785 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\Flow Simulation\\CFWiNT~1.cab",
+            "178.984007 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\arduino-ide-updater\\installer.exe",
+            "168.801688 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\917043694\\Apoc1.0000.mp4",
+            "168.56956 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Packages\\Microsoft.4297127D64EC6_8wekyb3d8bbwe\\LocalCache\\Local\\game\\libcef.dll",
+            "167.781864 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\i386_C~2.cab",
+            "167.172162 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\wrapper\\dists\\gradle-7.5-all\\6qsw290k5lz422uaf8jf6m7co\\gradle-7.5-all.zip",
+            "166.044548 MB"
+        ],
+        [
+            "c:/Program Files\\Docker\\Docker\\frontend\\Docker Desktop.exe",
+            "162.203736 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\AWB\\Media\\Data1.cab",
+            "160.809889 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\824558660\\The Last of Us HDR.mp4",
+            "159.741584 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\2215418014\\the_drive_by_visualdon_4k_60fps.mp4",
+            "159.042067 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\i386_S~4.cab",
+            "158.904072 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\caches\\8.0\\generated-gradle-jars\\gradle-api-8.0.jar",
+            "158.599261 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\makecode_microbit\\packages\\makecode_microbit-2.0.3-full.nupkg",
+            "156.417904 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\balena-etcher-updater\\installer.exe",
+            "155.02132 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            "154.688032 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Programs\\Microsoft VS Code\\_\\Code.exe",
+            "154.688032 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\caches\\7.5\\generated-gradle-jars\\gradle-api-7.5.jar",
+            "153.591147 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\AcroCEF\\libcef.dll",
+            "151.79464 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\acrocef_1\\libcef.dll",
+            "151.79464 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\Teams\\previous\\Teams.exe",
+            "149.475936 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\Teams\\current\\Teams.exe",
+            "149.472328 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\caches\\jars-9\\8c67bc99b2a1adf281c1aaa70d9f3d4e\\kotlin-compiler-embeddable-1.7.22.jar",
+            "145.383545 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\wallpaper_engine\\bin\\libcef.dll",
+            "143.453344 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\wallpaper_engine\\distribution\\bin\\libcef.dll",
+            "143.453344 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\caches\\jars-9\\de874551b52843e5556b06230c45e0e7\\kotlin-compiler-embeddable-1.7.10.jar",
+            "142.757733 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\Teams\\packages\\Teams-1.6.00.31801-full.nupkg",
+            "142.24288 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Programs\\Arduino IDE\\Arduino IDE.exe",
+            "140.576032 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\2218384942\\Welcome Home Sir.mp4",
+            "140.38339 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swelectric\\Client~1.cab",
+            "138.484096 MB"
+        ],
+        [
+            "c:/Program Files\\Java\\jdk-21\\lib\\modules",
+            "137.927373 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Discord\\app-1.0.9020\\Discord.exe",
+            "136.543008 MB"
+        ],
+        [
+            "c:/Program Files\\AMD\\CNext\\CNext\\Qt6WebEngineCore.dll",
+            "135.330744 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\bin\\cef\\cef.win7x64\\libcef.dll",
+            "134.874472 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\HelpFi~1.cab",
+            "133.918277 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\2193383989\\y2mate.com - Duck spinning to the rhythm_2rcGfc7RqE8_1080p.mp4",
+            "133.129419 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\wallpaper_engine\\projects\\temp\\mobile\\1774004342.mpkg",
+            "130.437602 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1774004342\\drive by visualdon.mp4",
+            "129.506073 MB"
+        ],
+        [
+            "c:/Program Files\\Android\\Android Studio\\plugins\\Kotlin\\lib\\kotlin-plugin.jar",
+            "129.088828 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1843218479\\synth city by visualdon.mp4",
+            "128.608666 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swComposer\\SWComp~1.cab",
+            "127.849997 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swComposer\\InterOps.cab",
+            "127.584474 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\plastics\\Software.cab",
+            "127.230791 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\i386_H~2.cab",
+            "125.039135 MB"
+        ],
+        [
+            "c:/ProgramData\\VaSe310806\\Microsoft\\Teams\\packages\\Teams-1.4.00.35564-full.nupkg",
+            "124.705468 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2021 2022 klas 4IW elektriciteit, notitieblok\\_Inhoudsbibliotheek\\elektriciteit 4IW.one (op 22-06-2022).one",
+            "124.644231 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2021 2022 klas 4IW elektriciteit, notitieblok\\_Inhoudsbibliotheek\\elektriciteit 4IW.one (op 11-06-2022).one",
+            "124.523349 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\.gradle\\wrapper\\dists\\gradle-8.0-bin\\ca5e32bp14vu59qr306oxotwh\\gradle-8.0-bin.zip",
+            "124.109385 MB"
+        ],
+        [
+            "c:/ProgramData\\VaSe310806\\Microsoft\\Teams\\previous\\Teams.exe",
+            "123.961152 MB"
+        ],
+        [
+            "c:/ProgramData\\VaSe310806\\Microsoft\\Teams\\current\\Teams.exe",
+            "123.959064 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\RaceLeague Demo\\RaceLeague_Data\\globalgamemanagers.assets",
+            "120.532036 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\i386_P~2.cab",
+            "120.271383 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\common\\TheoTown\\TheoTown66.lby",
+            "119.804287 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2021 2022 klas 4IW elektriciteit, notitieblok\\Sem VanBroekhoven\\elektriciteit 4IW.one (op 22-06-2022).one",
+            "118.121645 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Microsoft\\OneNote\\16.0\\Back-up\\2021 2022 klas 4IW elektriciteit, notitieblok\\Sem VanBroekhoven\\elektriciteit 4IW.one (op 11-06-2022).one",
+            "118.033053 MB"
+        ],
+        [
+            "c:/Program Files\\Cisco Packet Tracer 8.2.1\\bin\\Qt5WebEngineCore.dll",
+            "117.66016 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\Prerequisites\\DotNet\\Media\\ndp48-x86-x64-allos-enu.exe",
+            "117.38044 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\S7\\InstData\\PE_Product\\Media\\Data1.cab",
+            "116.512842 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\950809402\\Split Second 06.19.2017 - 19.10.24.02.mp4",
+            "114.67119 MB"
+        ],
+        [
+            "c:/Program Files\\obs-studio\\obs-plugins\\64bit\\libcef.dll",
+            "112.55912 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\Shader~1.cab",
+            "112.193332 MB"
+        ],
+        [
+            "c:/Program Files\\Mozilla Firefox\\xul.dll",
+            "107.869904 MB"
+        ],
+        [
+            "c:/Program Files (x86)\\Steam\\steamapps\\workshop\\content\\431960\\1474190327\\The Pornhub Intro But For An Hour.mp4",
+            "105.195018 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Roaming\\Microsoft\\Teams\\Cache\\Cache_Data\\data_3",
+            "100.671488 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\SOLIDWORKS Downloads\\SOLIDWORKS 2021 SP03\\swwi\\data\\Chm_En~1.cab",
+            "100.475168 MB"
+        ]
+    ],
+    "windows": [
+        [
+            "c:/hiberfil.sys",
+            "6.615801856 GB"
+        ],
+        [
+            "c:/Windows\\Installer\\9d64956.msi",
+            "491.954688 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Android\\Sdk\\system-images\\android-34\\google_apis\\x86_64\\system.img",
+            "4.306501632 GB"
+        ],
+        [
+            "c:/Windows\\Installer\\40cfff18.msp",
+            "344.588288 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\3005f560.msp",
+            "339.447808 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\245c2eb2.msp",
+            "312.434688 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\43e2be9.msp",
+            "279.289856 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\b1d1c.msp",
+            "260.042752 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\FLUTTER\\flutter\\bin\\cache\\artifacts\\engine\\windows-x64\\flutter_windows.dll.pdb",
+            "249.991168 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\OneDrive - MOSA-RT\\.visual studio code\\dart\\flutter\\project_to_do_list\\windows\\flutter\\ephemeral\\flutter_windows.dll.pdb",
+            "249.991168 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\OneDrive - MOSA-RT\\.visual studio code\\dart\\flutter\\testproject\\windows\\flutter\\ephemeral\\flutter_windows.dll.pdb",
+            "249.925632 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\24fffa.msp",
+            "244.396032 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\FLUTTER\\flutter\\bin\\cache\\artifacts\\engine\\windows-x64-profile\\flutter_windows.dll.pdb",
+            "231.452672 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\2fff99.msp",
+            "228.92544 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Documents\\FLUTTER\\flutter\\bin\\cache\\artifacts\\engine\\windows-x64-release\\flutter_windows.dll.pdb",
+            "227.463168 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\2ffe2c.msp",
+            "226.619392 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\139b15e0.msi",
+            "210.305024 MB"
+        ],
+        [
+            "c:/pagefile.sys",
+            "21.074751488 GB"
+        ],
+        [
+            "c:/Windows\\System32\\MRT.exe",
+            "175.98324 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\5633612.msi",
+            "170.500096 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\arduino-ide-updater\\pending\\arduino-ide_2.0.4_Windows_64bit.exe",
+            "169.904016 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\e299b689.msp",
+            "160.845824 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\3b6814ef.msi",
+            "154.3168 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\2ddea627.msp",
+            "150.073344 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\e32e5ada.msp",
+            "119.361536 MB"
+        ],
+        [
+            "c:/Windows\\servicing\\LCU\\Package_for_RollupFix~31bf3856ad364e35~amd64~~19041.3208.1.10\\amd64_microsoft-windows-edgechromium_31bf3856ad364e35_10.0.19041.1266_none_74657031110a9d30\\edge.wim",
+            "115.133979 MB"
+        ],
+        [
+            "c:/Windows\\WinSxS\\amd64_microsoft-windows-edgechromium_31bf3856ad364e35_10.0.19041.1266_none_74657031110a9d30\\Edge.wim",
+            "115.133979 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\116706.msi",
+            "111.376384 MB"
+        ],
+        [
+            "c:/Windows\\System32\\amdxc64.so",
+            "109.62824 MB"
+        ],
+        [
+            "c:/Windows\\System32\\DriverStore\\FileRepository\\u0396538.inf_amd64_5079b158caf50d08\\B395672\\amdxc64.so",
+            "109.62824 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\2f8054c6.msp",
+            "107.597824 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\19bf0f4a.msp",
+            "107.081728 MB"
+        ],
+        [
+            "c:/Windows\\System32\\DriverStore\\FileRepository\\u0396538.inf_amd64_5079b158caf50d08\\B395672\\amdkmdag.sys",
+            "106.388096 MB"
+        ],
+        [
+            "c:/Windows\\System32\\amd_comgr.dll",
+            "105.410072 MB"
+        ],
+        [
+            "c:/Windows\\System32\\DriverStore\\FileRepository\\amdocl.inf_amd64_1d390fc54998eee8\\amd_comgr.dll",
+            "105.410072 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\89bcab1.msp",
+            "105.156608 MB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\AppData\\Local\\Android\\Sdk\\system-images\\android-34\\google_apis\\x86_64\\vendor.img",
+            "103.809024 MB"
+        ],
+        [
+            "c:/Windows\\Installer\\40249016.msp",
+            "103.636992 MB"
+        ],
+        [
+            "c:/ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Siemens Automation\\SIMATIC_S7PLCSIM_V15_1.exe",
+            "1.623033264 GB"
+        ],
+        [
+            "c:/Users\\VaSe310806\\Downloads\\android-studio-2022.3.1.21-windows.exe",
+            "1.122823272 GB"
+        ]
+    ]
+}
