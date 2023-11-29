@@ -349,8 +349,23 @@ class AppConstructor():
         return self.__mouseAction["scroll"]
     
   
-   
+class Image:
+    def resizeImage(image, size: tuple[int,int]):
+        aspectRatio = Image.getAspectRatio(image)
+        imageWidth = size[0]
+        imageHeight = size[1]
+        if aspectRatio < 1:
+            imageWidth = int(imageWidth * aspectRatio)
+        else:
+            imageHeight = int(imageHeight/ aspectRatio)
+            
+        
 
+    def getAspectRatio(image):
+        #TODO get size
+        imageWidth, imageHeight = image # getsize
+        aspectRatio = imageWidth / imageHeight
+        
               
   
 class Scroll(AppConstructor):

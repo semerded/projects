@@ -4,7 +4,7 @@ def run():
     try:
         import byteconvertion
     except ModuleNotFoundError:
-        import storageCleanUpTool.byteconvertion as byteConvertion
+        import storageCleanUpTool.byteconvertion as byteconvertion
         
     try:
         import getReport
@@ -13,8 +13,16 @@ def run():
 
 
     print("\n\nA scan of your whole system will start\nThis will take a couple of minutes")
-    print("Start?", end="")
+    print("Start?: ")
     prompt = msvcrt.getche()
+    print("preparring tool")
+    time.sleep(1)
+    print("checking system")
+    time.sleep(1)
+    print("let's go!")
+    time.sleep(1)
+    
+    #TODO add terminal animation
 
     if not prompt.lower() == b"y":
         return
@@ -120,5 +128,3 @@ def run():
     # open report in html file
     os.system("start %s" % reportPath)
     input("done >>> ")
-    
-run()

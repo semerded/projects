@@ -1,4 +1,4 @@
-import pathchanger, capitalize, papagaaienwerk, zaklamp, folder_maker, storageCleanUpTool.storageCleanUpTool
+import pathchanger, capitalize, papagaaienwerk, zaklamp, folder_maker, storageCleanUpTool.storageCleanUpTool as storageCleanUpTool
 import json, msvcrt, os
 
 import os
@@ -37,11 +37,11 @@ name = setup["name"]
 callNumbers = [1,2,3,4,5,6]
 callNumbersAlt = [b'&', 'é', b'"',b"'", b'(', '§']
 callNames = ["pathchanger", "capitalize", "papagaaienwerk", "zaklamp", "folder maker", "large files finder (storage clean up tool)"]
-callPrograms = [pathchanger, capitalize, papagaaienwerk, zaklamp, folder_maker, storageCleanUpTool.storageCleanUpTool]
+callPrograms = [pathchanger, capitalize, papagaaienwerk, zaklamp, folder_maker, storageCleanUpTool]
 
 def Main():
     input_char = msvcrt.getch()
-    if input_char.lower() == b"q":
+    if input_char.lower() == b"q" or input_char == b"\x1b": # exit when q or esc is pressed
         exit()
     for index, altCall in enumerate(callNumbersAlt):
         if input_char == altCall:
