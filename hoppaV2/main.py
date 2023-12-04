@@ -1,12 +1,14 @@
 import os
-
+import shutil
 possibleDiskNames = ['c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 pathsDone = []
 
+"C:/"
 hoppaCounter = 0
 for diskName in possibleDiskNames:
     if os.path.exists("%s:/" %diskName):
-        for path, dirs, files in os.walk("%s:/" %diskName):
+        # for path, dirs, files in os.walk("%s:/" %diskName):
+        for path, dirs, files in os.walk("C:\Users\semva/Documents" ):
             hoppaPath = os.path.join(path, "hoppaV2.txt")
             if "windows" in hoppaPath.lower() or hoppaPath not in pathsDone: # i'm not putting it in windows folders because i'm not a monster
                 try:
