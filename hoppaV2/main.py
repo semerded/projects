@@ -20,4 +20,5 @@ for diskName in possibleDiskNames:
                     pass
                 
 print(hoppaCounter)
+input()
             

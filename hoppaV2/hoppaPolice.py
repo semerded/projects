@@ -64,6 +64,7 @@ def main():
         if len(failedHoppaFiles) > 0:
             print("unsuccesfully deleted %s hoppa files" %len(failedHoppaFiles))
             print(failedHoppaFiles)
+    input()
     exit()
     
     
