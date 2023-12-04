@@ -194,8 +194,8 @@ class ScreenUnit:
     def convert():
         ...
         
-    def precent(parentSize, childSize):
-        return childSize / parentSize
+    def precent(parentSize, percent):
+        return parentSize / 100 * percent
     
     def vw(screenUnit:float) -> float:
         return userScreenWidth / 100 * screenUnit
