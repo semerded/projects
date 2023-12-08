@@ -48,7 +48,7 @@ userScreenHeight = screenInfo.current_h
 mainDisplay = None
 
 mouseButtonsStatus = [False, False, False, False, False]
-previousMouseButtonStatus = [False, False, False, False]
+previousMouseButtonStatus = []
 
 
 class AppConstructor():
@@ -65,9 +65,16 @@ class AppConstructor():
         self.APPdisplay = pygame.display.set_mode(
             (screenWidth, screenHeight), *flags)
         mainDisplay = self.APPdisplay
+        
+        self.resetFlank = False
+        Interactions.resetPreviousMouseButtonStatus()
 
     def eventHandler(self, appEvents: pygame.event):
         Updating.updateDisplay()
+        if self.resetFlank:
+            Interactions.resetPreviousMouseButtonStatus()
+            self.resetFlank = False
+            
         self.appEvents = appEvents
         for event in self.appEvents:
             if event.type == pygame.QUIT:
@@ -82,9 +89,13 @@ class AppConstructor():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouseButtonsStatus[event.button] = True
+                Interactions.mouseButtonPositiveFlank(event.button)
+                self.resetFlank = True
 
             if event.type == pygame.MOUSEBUTTONUP:
                 mouseButtonsStatus[event.button] = False
+                Interactions.mouseButtonNegativeFlank(event.button)
+                self.resetFlank = True
 
     def resizeAppscreen(self, screenWidth, screenHeight, *flags):
         self.APPdisplayFlags = flags
@@ -221,10 +232,15 @@ class Image:
     def getImage(self):
         return self.image
 
-
 class Interactions:
     def __init__(self) -> None:
         pass
+            
+    def resetPreviousMouseButtonStatus():
+        global previousMouseButtonStatus
+        previousMouseButtonStatus = []
+        for i in range(len(mouseButton)):
+            previousMouseButtonStatus.append(False)
 
     def isMouseButtonPressed(mouseButton: mouseButton):
         if mouseButtonsStatus[mouseButton.value]:
@@ -239,7 +255,7 @@ class Interactions:
 
     def mouseButtonNegativeFlank(mouseButton: mouseButton):
         if not mouseButtonsStatus[mouseButton] and previousMouseButtonStatus[mouseButton]:
-            previousMouseButtonStatus[mouseButton] = False
+            previousMouseButtonStatus[mouseButton] = True
             return True
         return False
 
@@ -248,23 +264,40 @@ class Interactions:
         if rect.collidepoint(mousePos):
             return True
         return False
+    
+    def isMouseInArea(topCord: int, bottomCord: int):
+        rect = pygame.Rect(topCord, bottomCord)
+        return Interactions.isMouseOver(rect)
 
-    def isClicked(rect: pygame.Rect, mouseButton: mouseButton):
-        if Interactions.isMouseOver(rect) and Interactions.mouseButtonPositiveFlank(mouseButton.value):
+    def isClicked(mouseButton: mouseButton):
+        if Interactions.mouseButtonPositiveFlank(mouseButton):
+            return True
+        return False
+    
+    def isClickedInRect(rect: pygame.Rect, mouseButton: mouseButton):
+        if Interactions.isMouseOver(rect) and Interactions.isClicked(mouseButton):
             return True
         return False
 
-    def isReleased(rect: pygame.Rect, mouseButton: mouseButton):
-        if Interactions.isMouseOver(rect) and Interactions.mouseButtonNegativeFlank(mouseButton.value):
+    def isReleased(mouseButton: mouseButton):
+        if Interactions.mouseButtonNegativeFlank(mouseButton):
+            return True
+        return False
+    
+    def isReleasedInRect(rect: pygame.Rect, mouseButton: mouseButton):
+        if Interactions.isMouseOver(rect) and Interactions.isReleased(mouseButton):
             return True
         return False
 
-    def isHolding(rect: pygame.Rect, mouseButton: mouseButton):
-        if Interactions.isMouseOver(rect) and Interactions.isMouseButtonPressed(mouseButton.value):
+    def isHolding(mouseButton: mouseButton):
+        if Interactions.isMouseButtonPressed(mouseButton.value):
             return True
         return False
-            
-
+    
+    def isHoldingInRect(rect: pygame.Rect, mouseButton: mouseButton):
+        if Interactions.isMouseOver(rect) and Interactions.isMouseButtonPressed(mouseButton):
+            return True
+        return False
 
 class Text:
 
@@ -293,8 +326,11 @@ class Button:
                  ) -> None:
         self.buttonSize = size
         self.buttonColor = color
+        self.defaultButtonColor = color
         self.borderRadius = borderRadius
         self.buttonAtributes = Updating(_text=False, _border=False)
+        self.borderWidth = 0
+        self.buttonRect = pygame.Rect(0, 0, 0, 0)
 
     def simpleButton(size,
                      position, 
@@ -313,7 +349,7 @@ class Button:
         if text != "":
             buttonText = font.render(text, True, textColor)
             mainDisplay.blit(buttonText, (position[0] + size[0] / 2 - buttonText.get_width() / 2, position[1] + size[1] / 2 - buttonText.get_height() / 2))
-        return Interactions.isClicked(buttonRect, mouseButton.leftMouseButton)
+        return Interactions.isClickedInRect(buttonRect, mouseButton.leftMouseButton.value)
         
         
 
@@ -323,37 +359,59 @@ class Button:
         self._textColor = textColor
         self.buttonAtributes["_text"] = True
 
-    def border(self):
-        ...
+    def border(self, borderWidth: int, borderColor, ):
+        self.borderWidth = borderWidth
+        self.borderColor = borderColor
 
-    def radius(self):
-        ...
-
-    def __resize__(self):
-        ...
-
-    def __recolor__(self):
-        ...
+    def radius(self, borderRadius):
+        self.borderRadius = borderRadius
 
     def onMouseOver(self):
-        ...
+        return Interactions.isMouseOver(self.buttonRect)
 
-    def onMouseClick(self):
-        ...
+    def onMouseClick(self, mouseButton: mouseButton = mouseButton.leftMouseButton):
+        return Interactions.isClickedInRect(self.buttonRect, mouseButton.value)
 
-    def onMouseHold(self):
-        ...
+    def onMouseHold(self, mouseButton: mouseButton = mouseButton.leftMouseButton):
+        return Interactions.isHoldingInRect(self.buttonRect, mouseButton.value)
 
-    def changeColorOnHover(self):
-        ...
+    def changeColorOnHover(self, hoverColor: RGBvalue):
+        if self.onMouseOver():
+            self.buttonColor = hoverColor
+        else:
+            self.buttonColor = self.defaultButtonColor 
+            
+    def __placeText(self):
+        
+       
+    def __placeButtonRect(self):
+        Drawing.rectangleFromRect(self.buttonRect, self.buttonColor, Drawing.calculateInnerBorderRadius(self.borderRadius, self.borderWidth))
+        
+    def __placeBorder(self):
+        if self.borderWidth <= 0:
+            Drawing.border(self.borderWidth, self.buttonRect, self.borderColor, self.borderRadius)
+        
 
-    def place(self):
-        ...
+    def place(self, left, top):
+        self.buttonRect = pygame.Rect(left, top, self.buttonSize[0], self.buttonSize[1])
+        self.__placeButtonRect()
+        self.__placeText()
+        self.__placeBorder()
+    
+        
 
 
 class text:
     def __init__(self) -> None:
         pass
+    
+    def textOverflow(text, maxWidth):
+        ... #TODO
+    
+    def simpleText( position: tuple[int,int], text: str, font: pygame.font = Font.H3, color: RGBvalue = Color.BLACK):
+        textsurface = font.render(f"{text}", True, color)       
+        mainDisplay.blit(textsurface, (position[0], position[1]))
+
 
     def centerd(self):
         ...
@@ -362,6 +420,9 @@ class Drawing:
     def rectangle(xPosition: float, yPosition: float, width: float, height: float, color: RGBvalue = Color.LIGHTGRAY, cornerRadius: int = -1):
         return pygame.draw.rect(mainDisplay, color, pygame.Rect(xPosition, yPosition, width, height), border_radius=cornerRadius)
     
+    def rectangleFromRect(rect: pygame.Rect, color: RGBvalue = Color.LIGHTGRAY, cornerRadius: int = -1):
+        return pygame.draw.rect(mainDisplay, color, rect, border_radius=cornerRadius)
+        
     def border(borderWidth: int, rectValue: pygame.Rect | tuple[float, float, float, float], color: RGBvalue = Color.BLACK, cornerRadius: int = -1) -> pygame.Rect:
         if isinstance(rectValue, pygame.Rect):
             xPosition = rectValue.x - borderWidth / 2
@@ -374,7 +435,11 @@ class Drawing:
             width = rectValue[2] - borderWidth
             height = rectValue[3] - borderWidth
         return pygame.draw.rect(mainDisplay, color, pygame.Rect(xPosition, yPosition, width, height), width=borderWidth, border_radius=cornerRadius)
- 
+    
+    def calculateInnerBorderRadius(outerBorderRadius, borderWidth):
+        return notBelowZero(outerBorderRadius - borderWidth)
+        
+    
             
 class textbox:
     def __init__(self) -> None:
