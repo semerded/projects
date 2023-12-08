@@ -7,8 +7,10 @@ import sys
 from typing_extensions import TypeAlias, Literal
 from enum import Enum
 
+from colors import Color
+from fonts import Font
+
 pygame.init()
-pygame.font.init()
 
 screenUnit: TypeAlias = int | str
 modifiableFunctions: TypeAlias = Literal[
@@ -17,6 +19,11 @@ modifiableFunctions: TypeAlias = Literal[
 
 RGBvalue: TypeAlias = tuple[int, int, int]
 font : TypeAlias = pygame.font
+
+def notBelowZero(input: int | float) -> (int | float):
+    if input < 0:
+        return 0
+    return input
 
 
 class mouseButton(Enum):
@@ -44,66 +51,6 @@ mouseButtonsStatus = [False, False, False, False, False]
 previousMouseButtonStatus = [False, False, False, False]
 
 
-class Color:
-    # TODO add argb
-    RED = (255, 0, 0)
-    LAVARED = (255, 40, 0)
-    ORANGE = (255, 80, 0)
-    YELLOW = (255, 255, 0)
-    GREEN = (0, 255, 0)
-    OLIVEGREEN = (0, 150, 0)
-    DARKGREEN = (0, 100, 0)
-    TURQUISE = (0, 255, 255)
-    PINK = (255, 0, 100)
-    BLUE = (0, 0, 255)
-    LIGHTBLUE = (0, 120, 255)
-    PURPLE = (255, 0, 255)
-    WHITE = (255, 255, 255)
-    LESSWHITE = (200, 200, 200)
-    LESSRED = (200, 0, 0)
-    LESSYELLOW = (200, 200, 0)
-    LESSGREEN = (0, 200, 0)
-    LESSTURQUISE = (0, 200, 200)
-    LESSBLUE = (0, 0, 200)
-    LIGHTGRAY = LIGHTGREY = (150, 150, 150)
-    GRAY = GREY = (100, 100, 100)
-    DARKGRAY = DARKGREY = (50, 50, 50)
-    DARKMODEGRAY = DARKMODEGREY = (30, 30, 30)
-    BLACK = (0, 0, 0)
-
-    def random():
-        tuple = []
-        for i in range(3):
-            tuple.append(random.randint(0, 255))
-        return (tuple[0], tuple[1], tuple[2])
-
-
-class Font:
-    H1 = pygame.font.SysFont(pygame.font.get_default_font(), 34)
-    H2 = pygame.font.SysFont(pygame.font.get_default_font(), 30)
-    H3 = pygame.font.SysFont(pygame.font.get_default_font(), 24)
-    H4 = pygame.font.SysFont(pygame.font.get_default_font(), 20)
-    H5 = pygame.font.SysFont(pygame.font.get_default_font(), 18)
-    H6 = pygame.font.SysFont(pygame.font.get_default_font(), 16)
-    XXSMALL = pygame.font.SysFont(pygame.font.get_default_font(), 8)
-    XSMALL = pygame.font.SysFont(pygame.font.get_default_font(), 12)
-    SMALL = pygame.font.SysFont(pygame.font.get_default_font(), 14)
-    MEDIUM = pygame.font.SysFont(pygame.font.get_default_font(), 28)
-    LARGE = pygame.font.SysFont(pygame.font.get_default_font(), 38)
-    XLARGE = pygame.font.SysFont(pygame.font.get_default_font(), 46)
-    XXLARGE = pygame.font.SysFont(pygame.font.get_default_font(), 60)
-    XXXLARGE = pygame.font.SysFont(pygame.font.get_default_font(), 72)
-    FONT50 = pygame.font.SysFont(pygame.font.get_default_font(), 50)
-    FONT100 = pygame.font.SysFont(pygame.font.get_default_font(), 100)
-    FONT150 = pygame.font.SysFont(pygame.font.get_default_font(), 150)
-
-    def customFont(size, font=None):
-        if font == None:
-            return pygame.font.SysFont(pygame.font.get_default_font(), size)
-        else:
-            return pygame.font.SysFont(font, size)
-
-
 class AppConstructor():
     def __init__(self, screenWidth, screenHeight, *flags) -> None:
         global mainDisplay
@@ -120,6 +67,7 @@ class AppConstructor():
         mainDisplay = self.APPdisplay
 
     def eventHandler(self, appEvents: pygame.event):
+        Updating.updateDisplay()
         self.appEvents = appEvents
         for event in self.appEvents:
             if event.type == pygame.QUIT:
@@ -324,19 +272,29 @@ class Text:
 
     def place(self):
         pass
+    
+class Updating:
+    def updateDisplay():
+        pygame.display.update()
+        
+    def __init__(self, **kwargs) -> None:
+        self.objectList = kwargs
+        self.emptyObjectList = kwargs
+        
+    def resetObjectList(self):
+        self.objectList = self.emptyObjectList
 
 
 class Button:
     def __init__(self,
                  size: tuple[screenUnit, screenUnit],
-                 textColor: RGBvalue = Color.BLACK,
-                 bgColor: RGBvalue = Color.LESSWHITE,
-                 borderTickness: int = 2,
-                 borderColor: RGBvalue = Color.BLACK,
-                 borderRadius: int = 0,
-                 colorOnHover: RGBvalue = ...
+                 color: RGBvalue,
+                 borderRadius:int = -1
                  ) -> None:
-        pass
+        self.buttonSize = size
+        self.buttonColor = color
+        self.borderRadius = borderRadius
+        self.buttonAtributes = Updating(_text=False, _border=False)
 
     def simpleButton(size,
                      position, 
@@ -359,13 +317,16 @@ class Button:
         
         
 
-    def __text(self):
+    def text(self, text: str, textFont: pygame.font = Font.H4, textColor: RGBvalue = Color.BLACK):
+        self._text = text
+        self._textFont = textFont
+        self._textColor = textColor
+        self.buttonAtributes["_text"] = True
+
+    def border(self):
         ...
 
-    def __border(self):
-        ...
-
-    def __radius(self):
+    def radius(self):
         ...
 
     def __resize__(self):
