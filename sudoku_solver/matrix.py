@@ -1,6 +1,5 @@
 import pygameaddons as app
-import globals
-import math
+import math, _globals as globals
 
 class Matrix:
     def __init__(self, matrixLength: int, matrixHeight: int) -> None:
@@ -46,9 +45,11 @@ class Matrix:
         currentGridPosition = [0,0]
         for row in self.matrix:
             for column in row:
-                if column != 0:
-                    matrixUnitRect = app.pygame.Rect(self.matrixPosition[0] + self.gridUnitSide * currentGridPosition[0], self.matrixPosition[1] + self.gridUnitSide * currentGridPosition[1], self.gridUnitSide, self.gridUnitSide)
-                    app.Drawing.rectangleFromRect(matrixUnitRect, globals.fieldColors[column])
+                numberFontSurface = globals.numberFont.render(f"{column}", True, app.Color.BLACK)
+                matrixUnitRect = app.pygame.Rect(self.matrixPosition[0] + self.gridUnitSide * currentGridPosition[0], self.matrixPosition[1] + self.gridUnitSide * currentGridPosition[1], self.gridUnitSide, self.gridUnitSide)
+                if currentGridPosition[0] == self.mouseGridpos[0] -1 and currentGridPosition[1] == self.mouseGridpos[1]- 1:
+                    app.Drawing.rectangleFromRect(matrixUnitRect, app.Color.GREEN)
+                app.Text.centerTextInRect(numberFontSurface, matrixUnitRect)
                 currentGridPosition[0] += 1
             currentGridPosition[1] += 1
             currentGridPosition[0] = 0
@@ -87,19 +88,12 @@ class Matrix:
         self.mouseGridpos[1] = math.ceil(mousePos[1] / self.gridUnitSide)
         if self.mouseGridpos[0] != 0 and self.mouseGridpos[1] != 0:
             # To counter a strange bug where it would draw the bottom most square when you are drawing out of bounds above the screen
-            if globals.colorPickerEnabled:
-                self._pickColor()
-                return True
-            else:
-                return self._updateMatrixWithClick()
+            return self._updateMatrixWithClick()
         return False
     
-    def _pickColor(self):
-        globals.currentColor = self.matrix[self.mouseGridpos[1] - 1][self.mouseGridpos[0] - 1]
-        
+
     def _updateMatrixWithClick(self):
         if self.mouseGridpos[0] != self.previousMouseGridPos[0] or self.mouseGridpos[1] != self.previousMouseGridPos[1]:
-            self.matrix[self.mouseGridpos[1] - 1][self.mouseGridpos[0] - 1] = globals.currentColor
             self.drawMatrix(self.matrixPosition, self.sideMeasurement)
             self.previousMouseGridPos[0] = self.mouseGridpos[0]
             self.previousMouseGridPos[1] = self.mouseGridpos[1]
