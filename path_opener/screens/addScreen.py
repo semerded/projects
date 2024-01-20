@@ -6,6 +6,7 @@ import globals, inputCommands
 def place():
     Screen.clear()
     print("add a path executable")
+    inputCommands.flushBuffer()
     newName = input("name: ")
     newPath = input("path: ")
     inputCommands.checkIfNonValidPath(newPath)
@@ -26,6 +27,7 @@ def place():
         
         print("path added")
         saveJson(globals.pathData)
+        
     else:
         print("path aborted")
     

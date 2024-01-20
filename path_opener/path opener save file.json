@@ -5,8 +5,13 @@
         "altPath": "test"
     },
     {
-        "name": "hello",
-        "path": "test",
-        "altPath": "test"
+        "name": "penis",
+        "path": "yes",
+        "altPath": null
+    },
+    {
+        "name": "hello there",
+        "path": "yes",
+        "altPath": null
     }
 ]

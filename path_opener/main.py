@@ -1,5 +1,4 @@
-import time
-from enum import Enum
+import time, sys
 
 #file import
 from files import fileChecker, jsonHandler
@@ -18,7 +17,7 @@ key_esc = KeyListener("escape")
 globals.pathData = jsonHandler.readJson()
 
 mainScreen.place()
-
+        
 while True:
     if key_arrowUp.onClicked():
         globals.currentIndicatorIndex -= 1
@@ -46,11 +45,11 @@ while True:
     #     editScreen.place()
     #    mainScreen.place()
     
-        
-  
     if key_esc.onClicked():
         screen.Screen.clear()
         break
+  
+   
     
     time.sleep(0.001)
    

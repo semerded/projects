@@ -1,7 +1,7 @@
 # short commands including an input
 
 from files.fileChecker import fileChecker
-import time
+import time, sys, msvcrt
 
 
 def yesNoQuestion():
@@ -24,5 +24,7 @@ def loadDots(amount: int = 10):
         time.sleep(0.05)
     print()
         
-
-loadDots()
+def flushBuffer():
+    sys.stdout.flush()
+    while msvcrt.kbhit():
+        msvcrt.getch()
