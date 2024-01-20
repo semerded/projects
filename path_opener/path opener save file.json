@@ -1,6 +1,12 @@
 [
     {
         "name": "test",
-        "path": "test"
+        "path": "test",
+        "altPath": "test"
+    },
+    {
+        "name": "hello",
+        "path": "test",
+        "altPath": "test"
     }
 ]
