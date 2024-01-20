@@ -10,7 +10,7 @@ def place():
     if inputCommands.yesNoQuestion():
         globals.pathData.pop(globals.currentIndicatorIndex)
         saveJson(globals.pathData)
-        print("%s deleted")
+        print("%s deleted" %currentPathNameBeingDeleted)
         globals.currentIndicatorIndex = 0
 
     else:
