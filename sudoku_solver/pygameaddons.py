@@ -65,7 +65,7 @@ class logger():
 
 class AppConstructor():
     def __init__(self, screenWidth, screenHeight, *flags, manualUpdating: bool = False) -> None:
-        global mainDisplay
+        global mainDisplay, appScreenWidth, appScreenHeight
         self.screenWidth = displayInfo.current_w
         self.screenHeight = displayInfo.current_h
         self.APPdisplayFlags = flags
@@ -74,7 +74,9 @@ class AppConstructor():
         self.updatePending = True
         self.clock = pygame.time.Clock()
         
-
+        appScreenWidth = self.screenWidth
+        appScreenHeight = self.screenHeight
+        
         self.minimumScreenWidth = None
         self.minimumScreenHeight = None
         self.modifiedFunctions = {"quit": None}
@@ -431,7 +433,8 @@ class Image:
     def getImage(self):
         return self.image
 
-class Interactions:          
+class Interactions:
+    # mouse button        
     def resetPreviousMouseButtonStatus():
         global previousMouseButtonStatus
         previousMouseButtonStatus = []
@@ -503,6 +506,7 @@ class Interactions:
             return True
         return False
     
+    # scrolling
     def isScrolledUp():
         if Interactions.isMouseButtonPressed(mouseButton.scrollUp):
             return True
@@ -515,6 +519,12 @@ class Interactions:
     
     def isScrolled():
         if Interactions.isMouseButtonPressed(mouseButton.scrollUp) or Interactions.isMouseButtonPressed(mouseButton.scrollDown):
+            return True
+        return False
+    
+    # other
+    def rectInRect(masterRect: pygame.Rect, childRect: pygame.Rect):
+        if masterRect.colliderect(childRect):
             return True
         return False
     
@@ -599,6 +609,11 @@ class Button:
 
     def onMouseHold(self, mouseButton: mouseButton = mouseButton.leftMouseButton) -> bool:
         return Interactions.isHoldingInRect(self.buttonRect, mouseButton.value)
+    
+    def inRect(self, rect: pygame.Rect):
+        if Interactions.rectInRect(rect, self.getRect):
+            return True
+        return False
 
     def changeColorOnHover(self, hoverColor: RGBvalue):
         if self.onMouseOver():
@@ -670,6 +685,7 @@ class Text:
         self.textColor = color
         self.hoveringUp = True
         self.hoverDistance = 0
+        self._antiAllias = True
 
     
     # static
@@ -696,8 +712,8 @@ class Text:
                 return newText.strip() + overFlowTrailing
         return text
 
-    def simpleText( position: tuple[int,int], text: str, font: pygame.font = Font.H3, color: RGBvalue = Color.BLACK):
-        textsurface = font.render(f"{text}", True, color)       
+    def simpleText( position: tuple[int,int], text: str, font: pygame.font = Font.H3, color: RGBvalue = Color.BLACK, antiAllias: bool = True):
+        textsurface = font.render(f"{text}", antiAllias, color)       
         mainDisplay.blit(textsurface, (position[0], position[1]))
         return textsurface
 
@@ -708,7 +724,10 @@ class Text:
         
     # instance
     def renderText(self, text):
-        self.textSurface = self.font.render(text, True, self.textColor)
+        self.textSurface = self.font.render(text, self._antiAllias, self.textColor)
+        
+    def antiAllias(self, antiAllias: bool):
+        self._antiAllias = antiAllias
 
         
     def color(self, textColor: RGBvalue, backgroundColor: RGBvalue, borderColor: RGBvalue):
@@ -722,7 +741,7 @@ class Text:
         
     def centerTextInScreen(self, text):
         self.renderText(text)
-        mainDisplay.blit(self.textSurface)
+        mainDisplay.blit(self.textSurface, (ScreenUnit.vw(50) - self.textSurface.get_width() / 2, ScreenUnit.vh(50) - self.textSurface.get_height() / 2))
     
     def placeInRect(self, text: str, rect: pygame.Rect | tuple[float, float, float, float]):
         self.renderText(text)
