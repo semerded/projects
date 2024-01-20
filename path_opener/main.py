@@ -1,7 +1,7 @@
-import time, sys
+import time, os
 
 #file import
-from files import fileChecker, jsonHandler
+from files import jsonHandler
 from screens import addScreen, editScreen, mainScreen, deleteScreen, screen
 from keyListner import KeyListener
 import globals
@@ -44,6 +44,10 @@ while True:
     # if key_e.onClicked():
     #     editScreen.place()
     #    mainScreen.place()
+    
+    if key_enter.onClicked():
+        
+        os.startfile(globals.pathData[globals.currentIndicatorIndex]["path"])
     
     if key_esc.onClicked():
         screen.Screen.clear()
