@@ -41,9 +41,9 @@ while True:
         mainScreen.place()
         
         
-    # if key_e.onClicked():
-    #     editScreen.place()
-    #    mainScreen.place()
+    if key_e.onClicked():
+        editScreen.place()
+        mainScreen.place()
     
     if key_enter.onClicked():
         
