@@ -23,5 +23,4 @@ class Font:
     def customFont(size, font=None):
         if font == None:
             return pygame.font.SysFont(pygame.font.get_default_font(), size)
-        else:
-            return pygame.font.SysFont(font, size)
+        return pygame.font.SysFont(font, size)
