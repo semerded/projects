@@ -1,8 +1,8 @@
 import pygame, json, os
 
 
-if os.path.isfile('dingen\\handige dingen\\spacebarclick\\spacebar_data.json') is False:
-    raise Exception("File not found")
+# if os.path.isfile('dingen\\handige dingen\\spacebarclick\\spacebar_data.json') is False:
+#     raise Exception("File not found")
 
 pygame.init()
 
@@ -30,7 +30,7 @@ resize = tick = shift = afsluiten = shutdown = delete = escape = False
 
 kleurlijst = [rood, oranje, geel, groen, turquise, blauw, roze, paars, grijs, wit]
 
-with open('projects\\counter color\\counter.json') as fp:
+with open('counter.json') as fp:
     savefile = json.load(fp)
 teller = savefile['nummer']
 kleur = savefile['kleur']
@@ -67,7 +67,7 @@ while True:
     if texthoogte > schermy:
         texthoogte = schermy / 2
 
-    teller += 1
+    teller += 11111
     tellerstring = str(teller)
 
     for event in pygame.event.get():
@@ -149,7 +149,7 @@ while True:
         savefile['size'] = grootte
         savefile['height'] = texthoogte
 
-        with open('projects\\counter color\\counter.json', 'w') as json_file:
+        with open('counter.json', 'w') as json_file:
             json.dump(savefile, json_file, indent = 4, separators=(',',': '))
         if afsluiten:
             exit()

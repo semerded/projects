@@ -9,7 +9,7 @@ except ImportError:
 else:
     pygame__textinputImported = True
 
-version = '1.1.0'
+version = '1.1.1'
 def getVersion():
     print(version)
     
@@ -588,12 +588,19 @@ class Button:
         self.borderWidth = borderWidth
         self.borderColor = borderColor
 
-    def radius(self, borderRadius):
+    def updateRadius(self, borderRadius):
         self.borderRadius = borderRadius
         
     def icon(self, iconPath: str):
         self.__icon = Image(iconPath)
         self.__resizeIcon()
+        
+    def updateColor(self, buttonColor: RGBvalue):
+        self.buttonColor = buttonColor
+        
+    def updateText(self, text):
+        self.__text = Text.textOverflow(text, self.__textFont, self.buttonSize[0], overFlow)
+        
                 
     def __resizeIcon(self):
         self.__icon.resize(self.buttonSize[0], self.buttonSize[1])    
@@ -611,9 +618,7 @@ class Button:
         return Interactions.isHoldingInRect(self.buttonRect, mouseButton.value)
     
     def inRect(self, rect: pygame.Rect):
-        if Interactions.rectInRect(rect, self.getRect):
-            return True
-        return False
+        return Interactions.rectInRect(rect, self.getRect)
 
     def changeColorOnHover(self, hoverColor: RGBvalue):
         if self.onMouseOver():

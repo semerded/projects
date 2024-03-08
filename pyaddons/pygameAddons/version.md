@@ -15,3 +15,7 @@ added text
 
 # 1.1.0
 overhaul of interaction code
+
+# 1.1.1
+added a change color and text function to Button class
+changed naming of some methods of Button class
